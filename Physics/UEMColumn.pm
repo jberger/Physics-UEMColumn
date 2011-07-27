@@ -2,6 +2,7 @@ use MooseX::Declare;
 
 class Physics::UEMColumn {
 
+  use Carp;
   use List::Util 'sum';
 
   use Math::GSLx::ODEIV2;
@@ -103,6 +104,13 @@ class Physics::UEMColumn {
 
       my ($t, $z, $v, $st, $sz, $et, $ez, $gt, $gz) = @_;
       my ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
+
+      if ($st < 0) {
+        die "Sigma_t has gone negative!\n";
+      }
+      if ($sz < 0) {
+        die "Sigma_z has gone negative!\n";
+      }
 
       my $M_t = sum map { $_->($t, $z, $v) } @M_t;
       my $M_z = sum map { $_->($t, $z, $v) } @M_z;
