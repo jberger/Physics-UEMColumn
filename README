@@ -1,0 +1,25 @@
+Physics::UEMColumn pre-alpha
+============================
+
+Simulate the dynamics of ultrafast electron pulses propagating down an electron microscope column. This simulation is based on the Analytic Gaussian model proposed by Michalik and Sipe [ref] and extended by Berger and Schroeder [ref]. 
+
+
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  -Math::GSLx::ODEIV2
+    -Gnu Scientific Library (version 1.15 or higher!)
+  -MooseX::Declare
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2011 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.14.0 or,
+at your option, any later version of Perl 5 you may have available.
+
+
+
