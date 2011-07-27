@@ -9,7 +9,7 @@ use Math::GSLx::ODEIV2;
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
   constants => [ qw/ pi me qe epsilon_0 k / ],
-  L_funcs   => [ qw/ L L_t L_z / ],
+  model_funcs   => [ qw/ L L_t L_z / ],
   materials => [ qw/ Ta / ],
 );
 
@@ -39,7 +39,7 @@ sub Ta() {
   );
 }
 
-## Tag: L_funcs ##
+## Tag: model_funcs ##
 
 sub L {
   my ($xi) = @_;
