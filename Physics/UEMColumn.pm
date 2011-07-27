@@ -33,10 +33,12 @@ class Physics::UEMColumn {
     my $t0 = $self->start_time;
     my $tf = $t0;
 
-    # search for an acceleration element
-    my ($acc) = 
-      grep {blessed($_) eq 'Physics::UEMColumn::DCAccelerator'} 
+    # search for the first acceleration element
+    my (@acc) = 
+      sort { $a->location <=> $b->location } 
+      grep { blessed($_) eq 'Physics::UEMColumn::DCAccelerator' } 
       @{ $self->column->elements };
+    my $acc = $acc[0];
 
     # if found use estimations from that
     if ($acc) {
