@@ -27,7 +27,12 @@ class Physics::UEMColumn {
 
   has 'start_time' => ( isa => 'Num', is => 'rw', default => 0 );
   has 'end_time' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_est_end_time' );
-  has 'steps' => (isa => 'Num', is => 'rw', default => 100); # this is not likely to be the number of output steps
+  has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
+  has 'step_width' => ( isa => 'Num', is => 'ro', lazy => 1, builder => '_set_step_width' );
+
+  method _set_step_width () {
+    return ( ($self->end_time - $self->start_time) / $self->steps );
+  }
 
   method _est_end_time () {
     my $t0 = $self->start_time;
@@ -56,14 +61,14 @@ class Physics::UEMColumn {
   }
 
   method evaluate () {
-    my $eqns = $self->_make_diffeqs;
-    my $time_range = [ 
-      $self->start_time,
-      $self->end_time,
-      $self->steps,
-    ];
+    my $eqns       = $self->_make_diffeqs;
+    my $start_time = $self->start_time;
+    my $end_time   = $self->end_time;
 
-    my $result = ode_solver( $eqns, $time_range );
+    #logic here allows uniform step width over multiple runs
+    my $steps = int(0.5 + ($end_time - $start_time) / $self->step_width);
+
+    my $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ] );
 
     return $result;
   }

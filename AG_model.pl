@@ -32,7 +32,7 @@ $sim->column->add_element($acc);
 my $lens = Physics::UEMColumn::MagneticLens->new(
   location => 0.05,
   'length' => 0.01,
-  strength => 5e-11,
+  strength => 1.2e-11,
 );
 $sim->column->add_element($lens);
 
