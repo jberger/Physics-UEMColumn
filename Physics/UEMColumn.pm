@@ -63,8 +63,9 @@ class Physics::UEMColumn {
   method propagate () {
 
     my $result = $self->_evaluate_single_run();
-    my $stored_data = $self->pulse->data;
+
     
+    my $stored_data = $self->pulse->data;
     join_data( $stored_data, $result );
     return $result;
 
