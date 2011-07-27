@@ -36,7 +36,7 @@ my $lens = Physics::UEMColumn::MagneticLens->new(
 );
 $sim->column->add_element($lens);
 
-my $result = pdl( $sim->evaluate );
+my $result = pdl( $sim->propagate );
 
 my $win = pgwin( Device => '/xs');
 #$win->line( $result->slice('(1),'), $result->slice('(2),') / $result->at(2,-1) );

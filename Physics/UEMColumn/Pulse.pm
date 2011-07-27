@@ -25,6 +25,9 @@ class Physics::UEMColumn::Pulse {
   has 'gamma_t'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_t' );
   has 'gamma_z'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_z' );
 
+  # propagation history
+  has 'data' => ( isa => 'ArrayRef', is => 'rw', default => sub { [] } );
+
 
   # variance attribute initializers
   method _make_sigma_t () {
