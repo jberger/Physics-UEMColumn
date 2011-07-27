@@ -8,9 +8,10 @@ use Math::GSLx::ODEIV2;
 
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
-  constants => [ qw/ pi me qe epsilon_0 k / ],
-  model_funcs   => [ qw/ L L_t L_z / ],
-  materials => [ qw/ Ta / ],
+  constants   => [ qw/ pi me qe epsilon_0 k / ],
+  model_funcs => [ qw/ L L_t L_z / ],
+  util_funcs  => [ qw/ join_data / ],
+  materials   => [ qw/ Ta / ],
 );
 
 our @EXPORT_OK;
@@ -69,6 +70,22 @@ sub L_z {
   my $L = L($xi);
 
   return 3 * ($xi**2) * ( $xi * $L - 1) / (($xi**2) - 1)
+}
+
+## Tag: util_funcs ##
+
+sub join_data {
+  my ($container, $new) = @_;
+
+  if ( @$container ) {
+    #check for overlap
+    if ($container->[-1][0] == $new->[0][0]) {
+      pop @$old;
+    }
+  }
+
+  push @$container, @$new;
+  return $container;
 }
 
 1;

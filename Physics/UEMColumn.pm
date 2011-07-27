@@ -63,19 +63,9 @@ class Physics::UEMColumn {
   method propagate () {
 
     my $result = $self->_evaluate_single_run();
-    my $old_data = $self->pulse->data;
-
-    if ( ! @$old_data ) {
-      # if previous 'data' is empty simply set it to $result
-      $self->pulse->data( $result );
-    } else {
-      # else, check for overlap then push
-      if ($old_data->[-1][0] == $result->[0][0]) {
-        pop @$old_data;
-      }
-      $self->pulse->data( [ @$old_data, @$result ] );
-    }
-
+    my $stored_data = $self->pulse->data;
+    
+    join_data( $stored_data, $result );
     return $result;
 
   }
