@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use lib 'lib';
+
 use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':materials';
 
