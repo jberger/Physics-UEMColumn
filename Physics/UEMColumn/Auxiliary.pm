@@ -80,7 +80,7 @@ sub join_data {
   if ( @$container ) {
     #check for overlap
     if ($container->[-1][0] == $new->[0][0]) {
-      pop @$old;
+      pop @$container;
     }
   }
 

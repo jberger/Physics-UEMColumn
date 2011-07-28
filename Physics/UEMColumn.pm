@@ -26,7 +26,7 @@ class Physics::UEMColumn {
   );
 
   has 'start_time' => ( isa => 'Num', is => 'rw', default => 0 );
-  has 'end_time' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_est_end_time' );
+  has 'end_time' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_est_init_end_time' );
   has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
   has 'step_width' => ( isa => 'Num', is => 'ro', lazy => 1, builder => '_set_step_width' );
 
@@ -34,7 +34,8 @@ class Physics::UEMColumn {
     return ( ($self->end_time - $self->start_time) / $self->steps );
   }
 
-  method _est_end_time () {
+  #TODO allow for init pos of pulse ne 0
+  method _est_init_end_time () {
     my $t0 = $self->start_time;
     my $tf = $t0;
 
@@ -62,24 +63,52 @@ class Physics::UEMColumn {
 
   method propagate () {
 
-    my $result = $self->_evaluate_single_run();
+    my $result = [];
 
+    # continue to evaluate until pulse leaves column
+    while ($self->pulse->location < $self->column->length) {
+      my $segment_result = $self->_evaluate_single_run();
+      join_data( $result, $segment_result );
+    }
     
     my $stored_data = $self->pulse->data;
     join_data( $stored_data, $result );
+
+    # return only this propagation result
+    # full data available from $pulse->data;
     return $result;
 
   }
 
   method _evaluate_single_run () {
+    my $pulse      = $self->pulse;
     my $eqns       = $self->_make_diffeqs;
     my $start_time = $self->start_time;
     my $end_time   = $self->end_time;
 
+    if ($end_time == $start_time) {
+      $end_time = 1.1 * ($self->column->length - $pulse->location) / $self->pulse->velocity;
+      $self->end_time( $end_time );
+    }
+
     #logic here allows uniform step width over multiple runs
     my $steps = int(0.5 + ($end_time - $start_time) / $self->step_width);
 
+    #calculate the propagation on the specified time range
     my $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ] );
+
+    #update the simulation/pulse parameters from the result
+    #this sets up the next run if needed
+    my $end_state = $result->[-1];
+    $self->start_time($end_state->[0] );
+    $pulse->location( $end_state->[1] );
+    $pulse->velocity( $end_state->[2] );
+    $pulse->sigma_t(  $end_state->[3] );
+    $pulse->sigma_z(  $end_state->[4] );
+    $pulse->eta_t(    $end_state->[5] );
+    $pulse->eta_z(    $end_state->[6] );
+    $pulse->gamma_t(  $end_state->[7] );
+    $pulse->gamma_z(  $end_state->[8] );
 
     return $result;
   }
