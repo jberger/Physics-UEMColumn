@@ -153,10 +153,10 @@ class Physics::UEMColumn {
       my ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
 
       if ($st < 0) {
-        die "Sigma_t has gone negative!\n";
+        die "Sigma_t has gone negative at z=$z, t=$t\n";
       }
       if ($sz < 0) {
-        die "Sigma_z has gone negative!\n";
+        die "Sigma_z has gone negative at z=$z, t=$t\n";
       }
 
       my $M_t = sum map { $_->($t, $z, $v) } @M_t;
