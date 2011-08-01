@@ -35,8 +35,8 @@ use constant {
 
 sub Ta() {
   return (
-    energy_fermi => 5.3,
-    work_function => 4.25,
+    energy_fermi => '5.3eV',
+    work_function => '4.25eV',
   );
 }
 

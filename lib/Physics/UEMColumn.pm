@@ -10,13 +10,18 @@ class Physics::UEMColumn {
   use Physics::UEMColumn::Column;
   use Physics::UEMColumn::Element;
   use Physics::UEMColumn::Pulse;
+  use Physics::UEMColumn::Laser;
+  use Physics::UEMColumn::Photocathode;
 
   use Physics::UEMColumn::Auxiliary ':all';
+
+  has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
   has 'pulse' => (
     isa => 'Physics::UEMColumn::Pulse',
     is => 'ro',
-    required => 1,
+    lazy => 1,
+    builder => '_generate_pulse',
   );
 
   has 'column' => ( 
@@ -29,6 +34,10 @@ class Physics::UEMColumn {
   has 'end_time' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_est_init_end_time' );
   has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
   has 'step_width' => ( isa => 'Num', is => 'ro', lazy => 1, builder => '_set_step_width' );
+
+  method _generate_pulse () {
+    $self->column->photocathode->generate_pulse( $self->column, $self->number);
+  }
 
   method _set_step_width () {
     return ( ($self->end_time - $self->start_time) / $self->steps );

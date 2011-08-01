@@ -12,13 +12,26 @@ class Physics::UEMColumn::Element {
 
 }
 
-class Physics::UEMColumn::DCAccelerator
+class Physics::UEMColumn::Accelerator
   extends Physics::UEMColumn::Element {
+
+  method field () {
+    return 0;
+  }
+
+}
+
+class Physics::UEMColumn::DCAccelerator
+  extends Physics::UEMColumn::Accelerator {
 
   use Physics::UEMColumn::Auxiliary ':constants';
 
   has '+location' => ( required => 0, default => 0 );
   has 'voltage' => ( isa => 'Num', is => 'ro', required => 1 );
+
+  override field () {
+    $self->voltage / $self->length;
+  }
 
   override effect () {
     my $acc_length = $self->length;

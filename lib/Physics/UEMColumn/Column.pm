@@ -2,9 +2,9 @@ use MooseX::Declare;
 
 class Physics::UEMColumn::Column {
 
-  use Physics::UEMColumn::Laser;
-
   has laser => ( isa => 'Physics::UEMColumn::Laser', is => 'ro', required => 1);
+  has accelerator => ( isa => 'Physics::UEMColumn::Accelerator', is => 'ro', required => 1);
+  has photocathode => ( isa => 'Physics::UEMColumn::Photocathode', is => 'ro', required => 1);
 
   has elements => ( 
     traits => ['Array'],
@@ -17,6 +17,10 @@ class Physics::UEMColumn::Column {
   );
 
   has 'length' => ( isa => 'Num', is => 'rw', default => 0.1 ); #10cm
+
+  method BUILD (Item $params) {
+    $self->add_element( $self->accelerator );
+  } 
 
 }
 

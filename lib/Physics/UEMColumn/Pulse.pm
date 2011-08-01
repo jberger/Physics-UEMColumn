@@ -6,16 +6,11 @@ class Physics::UEMColumn::Pulse {
 
   # user specified attributes
   has 'velocity' => ( isa => 'Num', is => 'rw', required => 1 );
-  has 'width'    => ( isa => 'Num', is => 'rw', required => 1 );
-  has 'duration' => ( isa => 'Num', is => 'rw', required => 1 );
+#  has 'width'    => ( isa => 'Num', is => 'rw', required => 1 );
+#  has 'duration' => ( isa => 'Num', is => 'rw', required => 1 );
 
   has 'location' => ( isa => 'Num', is => 'rw', default => 0 );
   has 'number'   => ( isa => 'Num', is => 'rw', default => 1 );
-
-  # photocathode material parameters (energies in eV)
-  has 'energy_fermi' => ( isa => 'Num', is => 'ro', required => 1); 
-  has 'energy_laser' => ( isa => 'Num', is => 'ro', required => 1); 
-  has 'work_function' => ( isa => 'Num', is => 'ro', required => 1);
 
   # variance attributes
   has 'sigma_t'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_sigma_t' );

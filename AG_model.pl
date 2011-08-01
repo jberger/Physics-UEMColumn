@@ -6,7 +6,6 @@ use warnings;
 use lib 'lib';
 
 use Physics::UEMColumn;
-#use Physics::UEMColumn::Laser;
 use Physics::UEMColumn::Auxiliary ':materials';
 
 use PDL;
@@ -18,30 +17,21 @@ my $laser = Physics::UEMColumn::Laser->new(
   energy => '4.75eV',
 );
 
-my $column = Physics::UEMColumn::Column->new(
-  laser => $laser,
-);
-
-my $pulse = Physics::UEMColumn::Pulse->new(
-  number => 1e8,
-  velocity => 1,
-  width => 1e-3,
-  duration => 1e-12,
-  energy_laser => 4.75,
-  sigma_z => ( 1e-4 )**2 / 2,
-  Ta,
-);
-
-my $sim = Physics::UEMColumn->new(
-  column => $column,
-  pulse  => $pulse,
-);
-
 my $acc = Physics::UEMColumn::DCAccelerator->new(
   'length' => 0.01,
   voltage => 20000,
 );
-$sim->column->add_element($acc);
+
+my $column = Physics::UEMColumn::Column->new(
+  laser => $laser,
+  accelerator => $acc,
+  photocathode => Physics::UEMColumn::Photocathode->new(Ta),
+);
+
+my $sim = Physics::UEMColumn->new(
+  column => $column,
+  number => 1e8,
+);
 
 my $lens = Physics::UEMColumn::MagneticLens->new(
   location => 0.05,
