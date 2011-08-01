@@ -35,6 +35,9 @@ class Physics::UEMColumn {
   has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
   has 'step_width' => ( isa => 'Num', is => 'ro', lazy => 1, builder => '_set_step_width' );
 
+  #when estimating end times what additional error should be given. Set to 1 for no extra time.
+  has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
+
   method _generate_pulse () {
     $self->column->photocathode->generate_pulse( $self->column, $self->number);
   }
@@ -60,7 +63,7 @@ class Physics::UEMColumn {
     }
 
     #add 10% error factor (time will be extended later if needed)
-    $tf *= 1.1;
+    $tf *= $self->time_error;
 
     return $tf;
   }
@@ -94,7 +97,7 @@ class Physics::UEMColumn {
     my $end_time   = $self->end_time;
 
     if ($end_time == $start_time) {
-      $end_time = 1.1 * ($self->column->length - $pulse->location) / $self->pulse->velocity;
+      $end_time = $self->time_error * ($self->column->length - $pulse->location) / $self->pulse->velocity;
       $self->end_time( $end_time );
     }
 
