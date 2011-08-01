@@ -22,7 +22,7 @@ class Physics::UEMColumn {
   has 'column' => ( 
     isa => 'Physics::UEMColumn::Column', 
     is => 'ro', 
-    default => sub { Physics::UEMColumn::Column->new() },
+    required => 1,
   );
 
   has 'start_time' => ( isa => 'Num', is => 'rw', default => 0 );

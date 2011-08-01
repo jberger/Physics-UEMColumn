@@ -6,10 +6,21 @@ use warnings;
 use lib 'lib';
 
 use Physics::UEMColumn;
+#use Physics::UEMColumn::Laser;
 use Physics::UEMColumn::Auxiliary ':materials';
 
 use PDL;
 use PDL::Graphics::PGPLOT::Window;
+
+my $laser = Physics::UEMColumn::Laser->new(
+  width => 1e-3,
+  duration => 1e-12,
+  energy => '4.75eV',
+);
+
+my $column = Physics::UEMColumn::Column->new(
+  laser => $laser,
+);
 
 my $pulse = Physics::UEMColumn::Pulse->new(
   number => 1e8,
@@ -22,7 +33,8 @@ my $pulse = Physics::UEMColumn::Pulse->new(
 );
 
 my $sim = Physics::UEMColumn->new(
-  pulse => $pulse,
+  column => $column,
+  pulse  => $pulse,
 );
 
 my $acc = Physics::UEMColumn::DCAccelerator->new(
