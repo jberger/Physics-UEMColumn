@@ -16,7 +16,7 @@ class Physics::UEMColumn::Column {
     default => sub{ [] },
   );
 
-  has 'length' => ( isa => 'Num', is => 'rw', default => 0.1 ); #10cm
+  has 'length' => ( isa => 'Num', is => 'rw', required => 1 );
 
   method BUILD (Item $params) {
     $self->add_element( $self->accelerator );

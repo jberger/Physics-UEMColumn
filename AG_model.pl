@@ -23,6 +23,7 @@ my $acc = Physics::UEMColumn::DCAccelerator->new(
 );
 
 my $column = Physics::UEMColumn::Column->new(
+  'length' => 0.1, 
   laser => $laser,
   accelerator => $acc,
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
