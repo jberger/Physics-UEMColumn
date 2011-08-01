@@ -43,19 +43,14 @@ class Physics::UEMColumn {
     return ( ($self->end_time - $self->start_time) / $self->steps );
   }
 
-  #TODO allow for init pos of pulse ne 0
   method _est_init_end_time () {
     my $t0 = $self->start_time;
     my $tf = $t0;
 
-    # search for the first acceleration element
-    my (@acc) = 
-      sort { $a->location <=> $b->location } 
-      grep { blessed($_) eq 'Physics::UEMColumn::DCAccelerator' } 
-      @{ $self->column->elements };
-    my $acc = $acc[0];
+    my $acc = $self->column->accelerator;
 
-    # if found use estimations from that
+    # this test is a holdover, leaving in case I want to implement a Null Accelerator
+    # test should always succeed as acclerator is now a required attribute of the column
     if ($acc) {
       $tf += $acc->est_exit_time;
       $tf += ( ($self->column->length() - $acc->length()) / $acc->est_exit_vel );
