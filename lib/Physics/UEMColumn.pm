@@ -72,10 +72,13 @@ class Physics::UEMColumn {
 
   method propagate () {
 
+    my $iter = 1;
     my $result = [];
 
     # continue to evaluate until pulse leaves column
     while ($self->pulse->location < $self->column->length) {
+      warn "Segment iteration number: " . $iter++ . "\n";
+
       my $segment_result = $self->_evaluate_single_run();
       join_data( $result, $segment_result );
     }
