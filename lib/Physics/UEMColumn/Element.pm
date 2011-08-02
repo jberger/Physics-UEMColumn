@@ -2,8 +2,10 @@ use MooseX::Declare;
 
 class Physics::UEMColumn::Element {
 
-  has 'location' => ( isa => 'Num', is => 'ro', required => 1); #
-  has 'length'    => ( isa => 'Num', is => 'ro', required => 1); #
+  has 'location' => ( isa => 'Num', is => 'ro', required => 1);
+  has 'length'   => ( isa => 'Num', is => 'ro', required => 1);
+
+  has 'cutoff'   => ( isa => 'Num', is => 'ro', default => 3); # relative distance to ignore effect
 
   method effect () { 
     # return an arrayref with code for M_t, M_z and acc_z respectively or 0
@@ -77,11 +79,13 @@ class Physics::UEMColumn::MagneticLens
     my $lens_str = $self->strength;
     my $lens_order = $self->order;
 
+    my $cutoff = $self->cutoff;
+
     my $code = sub {
       my ($t, $pulse_z, $pulse_v) = @_;
 
       my $prox = ($pulse_z - $lens_z) / ( $lens_length / 2 );
-      if (abs($prox) > 3) {
+      if (abs($prox) > $cutoff) {
         return 0;
       }
 
@@ -116,11 +120,13 @@ class Physics::UEMColumn::RFCavity
     my $freq   = $self->frequency;
     my $phase  = $self->phase;
 
+    my $cutoff = $self->cutoff;
+
     my $code_z = sub {
       my ($t, $pulse_z, $pulse_v) = @_;
 
       my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
-      if (abs($prox) > 3) {
+      if (abs($prox) > $cutoff) {
         return 0;
       }
 
@@ -137,7 +143,7 @@ class Physics::UEMColumn::RFCavity
       my ($t, $pulse_z, $pulse_v) = @_;
 
       my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
-      if (abs($prox) > 3) {
+      if (abs($prox) > $cutoff) {
         return 0;
       }
 
@@ -147,7 +153,7 @@ class Physics::UEMColumn::RFCavity
       my ($t, $pulse_z, $pulse_v) = @_;
 
       my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
-      if (abs($prox) > 3) {
+      if (abs($prox) > $cutoff) {
         return 0;
       }
 
