@@ -8,7 +8,7 @@ use Math::GSLx::ODEIV2;
 
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
-  constants   => [ qw/ pi me qe epsilon_0 k / ],
+  constants   => [ qw/ pi me qe epsilon_0 k vc / ],
   model_funcs => [ qw/ L L_t L_z / ],
   util_funcs  => [ qw/ join_data / ],
   materials   => [ qw/ Ta / ],
@@ -25,6 +25,7 @@ use constant {
   me => 9.1e-31,
   qe => 1.6e-19,
   epsilon_0 => 8.85e-12,
+  vc => 2.9979e8,
 };
 
 use constant {

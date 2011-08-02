@@ -147,6 +147,18 @@ class Physics::UEMColumn::RFCavity
         return 0;
       }
 
+      my $trig_arg = 2 * pi * $freq * ( $pulse_z - $lens_z ) / $pulse_v + $phase;
+
+      my $mag_comp = 
+        $pulse_v / (vc**2) * 2 * pi * $freq 
+        * cos( $trig_arg );
+
+      my $end_comp = 
+        2 * $order / $length * ($prox**(2 * $order - 1))
+        * sin( $trig_arg );
+
+      return -$str * qe * ($mag_comp + $end_comp) * exp( - $prox**(2 * $order));
+
     };
 
     my $code_acc = sub {
@@ -157,9 +169,14 @@ class Physics::UEMColumn::RFCavity
         return 0;
       }
 
+      my $return = 
+        qe * $str
+        * sin( 2 * pi * $freq * ( $pulse_z - $lens_z ) / $pulse_v + $phase)
+        * exp( - $prox**(2 * $order));
+
     };
 
-    return [0, $code_z, 0];
+    return [$code_t, $code_z, $code_acc];
 
   }
 

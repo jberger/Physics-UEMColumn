@@ -18,12 +18,12 @@ my $laser = Physics::UEMColumn::Laser->new(
 );
 
 my $acc = Physics::UEMColumn::DCAccelerator->new(
-  'length' => 0.01,
+  'length' => 0.020,
   voltage => 20000,
 );
 
 my $column = Physics::UEMColumn::Column->new(
-  'length' => 0.2, 
+  'length' => 0.350, 
   laser => $laser,
   accelerator => $acc,
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
@@ -34,17 +34,28 @@ my $sim = Physics::UEMColumn->new(
   number => 1e8,
 );
 
-my $lens = Physics::UEMColumn::MagneticLens->new(
-  location => 0.05,
-  'length' => 0.01,
-  strength => 1.2e-11,
+my $z_rf = 0.200;
+my $l_mag_lens = 25.4e-3;
+my $cooke_sep = 0.050;
+my $str_mag = 8.0e-13;
+
+my $lens1 = Physics::UEMColumn::MagneticLens->new(
+  location => $z_rf - $cooke_sep,
+  'length' => $l_mag_lens,
+  strength => $str_mag,
 );
-$sim->column->add_element($lens);
+my $lens2 = Physics::UEMColumn::MagneticLens->new(
+  location => $z_rf + $cooke_sep,
+  'length' => $l_mag_lens,
+  strength => $str_mag,
+);
+$sim->column->add_element($lens1);
+$sim->column->add_element($lens2);
 
 my $rf_cav = Physics::UEMColumn::RFCavity->new(
-  location  => 0.12,
+  location  => $z_rf,
   'length'  => 0.02,
-  strength  => 4e5,
+  strength  => 2e5,
   frequency => 3e9,
 );
 $sim->column->add_element($rf_cav);
