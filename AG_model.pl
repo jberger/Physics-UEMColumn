@@ -23,7 +23,7 @@ my $acc = Physics::UEMColumn::DCAccelerator->new(
 );
 
 my $column = Physics::UEMColumn::Column->new(
-  'length' => 0.1, 
+  'length' => 0.2, 
   laser => $laser,
   accelerator => $acc,
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
@@ -41,11 +41,21 @@ my $lens = Physics::UEMColumn::MagneticLens->new(
 );
 $sim->column->add_element($lens);
 
+my $rf_cav = Physics::UEMColumn::RFCavity->new(
+  location  => 0.12,
+  'length'  => 0.02,
+  strength  => 4e5,
+  frequency => 3e9,
+);
+$sim->column->add_element($rf_cav);
+
 my $result = pdl( $sim->propagate );
 
-my $win = pgwin( Device => '/xs');
+my $win_t = pgwin( Device => '/xs');
+my $win_z = pgwin( Device => '/xs');
 #$win->line( $result->slice('(1),'), $result->slice('(2),') / $result->at(2,-1) );
-$win->line( $result->slice('(1),'), sqrt( $result->slice('(4),') / $result->at(4,0) ) );
+$win_t->line( $result->slice('(1),'), sqrt( $result->slice('(3),') / $result->at(3,0) ) );
+$win_z->line( $result->slice('(1),'), sqrt( $result->slice('(4),') / $result->at(4,0) ) );
 print $result;
 
 

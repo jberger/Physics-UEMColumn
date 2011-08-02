@@ -184,7 +184,7 @@ class Physics::UEMColumn {
       $dv = $acc_z;
 
       $dst = 2 * $gt / me;
-      $dsz = 2 * $gt / me;
+      $dsz = 2 * $gz / me;
 
       $det = - 2 * $gt * $et / ( me * $st );
       $dez = - 2 * $gz * $ez / ( me * $sz );

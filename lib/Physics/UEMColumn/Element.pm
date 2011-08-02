@@ -48,6 +48,7 @@ class Physics::UEMColumn::DCAccelerator
 
     };
 
+    #TODO add anode effects
     return [0, 0, $code];
 
   }
@@ -66,7 +67,7 @@ class Physics::UEMColumn::DCAccelerator
 class Physics::UEMColumn::MagneticLens 
   extends Physics::UEMColumn::Element {
 
-  has 'strength' => ( isa => 'Num', is => 'rw', default => 0);
+  has 'strength' => ( isa => 'Num', is => 'rw', required => 0);
   has 'order' =>    ( isa => 'Int', is => 'ro', default => 1);
 
   override effect () {
@@ -93,3 +94,68 @@ class Physics::UEMColumn::MagneticLens
   }
 
 }
+
+class Physics::UEMColumn::RFCavity
+  extends Physics::UEMColumn::Element {
+
+  use Physics::UEMColumn::Auxiliary ':constants';
+
+  has 'strength'  => (isa => 'Num', is => 'rw', required => 1);
+  has 'frequency' => (isa => 'Num', is => 'ro', required => 1);
+  #has 'radius'    => (isa => 'Num', is => 'ro', required => 1);
+
+  has 'phase'     => (isa => 'Num', is => 'ro', default => 0);
+  has 'order'     => (isa => 'Int', is => 'ro', default => 2);
+
+  override effect () {
+
+    my $lens_z = $self->location;
+    my $length = $self->length;
+    my $str    = $self->strength;
+    my $order  = $self->order;
+    my $freq   = $self->frequency;
+    my $phase  = $self->phase;
+
+    my $code_z = sub {
+      my ($t, $pulse_z, $pulse_v) = @_;
+
+      my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
+      if (abs($prox) > 3) {
+        return 0;
+      }
+
+      my $return = 
+        qe / $pulse_v * $str * 2 * pi * $freq 
+        * cos( 2 * pi * $freq * ( $pulse_z - $lens_z ) / $pulse_v + $phase)
+        * exp( - $prox**(2 * $order));
+
+      return $return;
+
+    };
+
+    my $code_t = sub {
+      my ($t, $pulse_z, $pulse_v) = @_;
+
+      my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
+      if (abs($prox) > 3) {
+        return 0;
+      }
+
+    };
+
+    my $code_acc = sub {
+      my ($t, $pulse_z, $pulse_v) = @_;
+
+      my $prox = ($pulse_z - $lens_z) / ( $length / 2 );
+      if (abs($prox) > 3) {
+        return 0;
+      }
+
+    };
+
+    return [0, $code_z, 0];
+
+  }
+
+}
+
