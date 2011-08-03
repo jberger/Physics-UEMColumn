@@ -107,7 +107,11 @@ class Physics::UEMColumn {
     my $steps = int(0.5 + ($end_time - $start_time) / $self->step_width);
 
     #calculate the propagation on the specified time range
-    my $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
+    my $result;
+    {
+      local $SIG{__WARN__} = sub{ unless( $_[0] =~ /'ode_solver'/) { warn @_ } };
+      $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
+    }
 
     #update the simulation/pulse parameters from the result
     #this sets up the next run if needed
@@ -165,10 +169,12 @@ class Physics::UEMColumn {
       my ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
 
       if ($st < 0) {
-        die "Sigma_t has gone negative at z=$z, t=$t\n";
+        warn "Sigma_t has gone negative at z=$z, t=$t\n";
+        return (undef) x 8;
       }
       if ($sz < 0) {
-        die "Sigma_z has gone negative at z=$z, t=$t\n";
+        warn "Sigma_z has gone negative at z=$z, t=$t\n";
+        return (undef) x 8;
       }
 
       my $M_t = sum map { $_->($t, $z, $v) } @M_t;

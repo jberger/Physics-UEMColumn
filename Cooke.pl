@@ -32,13 +32,13 @@ my $column = Physics::UEMColumn::Column->new(
 my $sim = Physics::UEMColumn->new(
   column => $column,
   number => 1e8,
-  solver_opts => { epsrel => 1e-11 },
+  #solver_opts => { h_max => 1e-13 },
 );
 
 my $z_rf = 0.200;
 my $l_mag_lens = 25.4e-3;
 my $cooke_sep = 0.050;
-my $str_mag = 8.0e-13;
+my $str_mag = 20e-13;
 
 my $lens1 = Physics::UEMColumn::MagneticLens->new(
   location => $z_rf - $cooke_sep,
@@ -56,7 +56,7 @@ $sim->column->add_element($lens2);
 my $rf_cav = Physics::UEMColumn::RFCavity->new(
   location  => $z_rf,
   'length'  => 0.02,
-  strength  => 2e5,
+  strength  => 2.3e5,
   frequency => 3e9,
 );
 $sim->column->add_element($rf_cav);
