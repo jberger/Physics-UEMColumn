@@ -32,6 +32,7 @@ my $column = Physics::UEMColumn::Column->new(
 my $sim = Physics::UEMColumn->new(
   column => $column,
   number => 1e8,
+  solver_opts => { epsrel => 1e-11 },
 );
 
 my $z_rf = 0.200;
@@ -62,11 +63,14 @@ $sim->column->add_element($rf_cav);
 
 my $result = pdl( $sim->propagate );
 
-my $win_t = pgwin( Device => '/xs');
-my $win_z = pgwin( Device => '/xs');
+my $win = pgwin( Device => '/xs');
 #$win->line( $result->slice('(1),'), $result->slice('(2),') / $result->at(2,-1) );
-$win_t->line( $result->slice('(1),'), sqrt( $result->slice('(3),') / $result->at(3,0) ) );
-$win_z->line( $result->slice('(1),'), sqrt( $result->slice('(4),') / $result->at(4,0) ) );
+my $st = $result->slice('(3),');
+my $sz = $result->slice('(4),');
+
+$win->line( $result->slice('(1),'), sqrt( $st / maximum($st) ) );
+$win->hold();
+$win->line( $result->slice('(1),'), sqrt( $sz / maximum($sz) ) );
 print $result;
 
 

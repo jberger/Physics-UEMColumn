@@ -37,6 +37,8 @@ class Physics::UEMColumn {
 
   #when estimating end times what additional error should be given. Set to 1 for no extra time.
   has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
+  #opts hashref passed directly to ode_solver
+  has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
 
   method _generate_pulse () {
     $self->column->photocathode->generate_pulse( $self->column, $self->number);
@@ -105,7 +107,7 @@ class Physics::UEMColumn {
     my $steps = int(0.5 + ($end_time - $start_time) / $self->step_width);
 
     #calculate the propagation on the specified time range
-    my $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ] );
+    my $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
 
     #update the simulation/pulse parameters from the result
     #this sets up the next run if needed
