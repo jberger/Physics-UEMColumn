@@ -149,9 +149,9 @@ class Physics::UEMColumn {
     my $elements = $self->column->elements;
     my (@M_t, @M_z, @acc_z);
     foreach my $effect (map { $_->effect } @$elements) {
-      push @M_t,   $effect->[0] if $effect->[0];
-      push @M_z,   $effect->[1] if $effect->[1];
-      push @acc_z, $effect->[2] if $effect->[2];
+      push @M_t,   $effect->{M_t} if defined $effect->{M_t};
+      push @M_z,   $effect->{M_z} if defined $effect->{M_z};
+      push @acc_z, $effect->{acc} if defined $effect->{acc};
     }
 
     ## Create DE Code Reference ##

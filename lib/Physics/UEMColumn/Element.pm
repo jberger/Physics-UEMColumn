@@ -8,8 +8,8 @@ class Physics::UEMColumn::Element {
   has 'cutoff'   => ( isa => 'Num', is => 'ro', default => 3); # relative distance to ignore effect
 
   method effect () { 
-    # return an arrayref with code for M_t, M_z and acc_z respectively or 0
-    return [0, 0, 0];
+    # return an hashref with code for M_t, M_z and acc_z
+    return {};
   }
 
 }
@@ -51,7 +51,7 @@ class Physics::UEMColumn::DCAccelerator
     };
 
     #TODO add anode effects
-    return [0, 0, $code];
+    return {acc => $code};
 
   }
 
@@ -93,7 +93,7 @@ class Physics::UEMColumn::MagneticLens
 
     };
 
-    return [$code, 0, 0];
+    return {M_t => $code};
 
   }
 
@@ -176,7 +176,7 @@ class Physics::UEMColumn::RFCavity
 
     };
 
-    return [$code_t, $code_z, $code_acc];
+    return {M_t => $code_t, M_z => $code_z, acc => $code_acc};
 
   }
 
