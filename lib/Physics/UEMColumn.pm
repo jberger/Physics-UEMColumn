@@ -209,6 +209,48 @@ class Physics::UEMColumn {
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
     };
 
+    ## Create Jacobian Code Reference ##
+    my $jac = sub {
+
+      ## Parameters ##
+
+      my ($t, $z, $v, $st, $sz, $et, $ez, $gt, $gz) = @_;
+
+      if ($st < 0) {
+        warn "Sigma_t has gone negative at z=$z, t=$t\n";
+        return (undef) x 8;
+      }
+      if ($sz < 0) {
+        warn "Sigma_z has gone negative at z=$z, t=$t\n";
+        return (undef) x 8;
+      }
+
+      my $M_t = sum map { $_->($t, $z, $v) } @M_t;
+      my $M_z = sum map { $_->($t, $z, $v) } @M_z;
+      my $acc_z = sum map { $_->($t, $z, $v) } @acc_z;
+
+      #avoid "mathematical use of undef" warnings
+      $M_t   ||= 0;
+      $M_z   ||= 0;
+      $acc_z ||= 0;
+
+      ## Setup Differentials ##
+      my ($ddgtdst, $ddgtdsz, $ddgzdst, $ddgzdsz);
+
+      my $jacobian = [
+        [0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 2 / me, 0],
+        [0, 0, 0, 0, 0, 0, 0, 2 / me],
+        [0, 0, 4 * $gt * $et / (me * ($st**2)), 0, - 2 * $gt / ( me * $st ), 0, - 2 * $et / ( me * $st ), 0 ],
+        [0, 0, 0, 4 * $gz * $ez / (me * ($sz**2)), 0, - 2 * $gz / ( me * $sz ), 0, - 2 * $ez / ( me * $sz ) ],
+        [0, 0, $ddgtdst, $ddgtdsz, 1 / $st, 0, 2 * $gt / $st, 0 ],
+        [0, 0, $ddgzdst, $ddgzdsz, 0, 1 / $sz, 0, 2 * $gz / $sz ],
+      ];
+
+      return ($jacobian);
+    };
+
     return $eqns;
 
   }

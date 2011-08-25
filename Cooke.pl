@@ -32,7 +32,7 @@ my $column = Physics::UEMColumn::Column->new(
 my $sim = Physics::UEMColumn->new(
   column => $column,
   number => 1e8,
-  #solver_opts => { h_max => 1e-13 },
+  #solver_opts => { type => 'msadams' },
 );
 
 my $z_rf = 0.200;
@@ -71,7 +71,7 @@ my $sz = $result->slice('(4),');
 $win->line( $result->slice('(1),'), sqrt( $st / maximum($st) ) );
 $win->hold();
 $win->line( $result->slice('(1),'), sqrt( $sz / maximum($sz) ) );
-print $result;
+#print $result;
 
 
 
