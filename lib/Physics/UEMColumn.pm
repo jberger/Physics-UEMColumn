@@ -93,10 +93,10 @@ class Physics::UEMColumn {
   }
 
   method _evaluate_single_run () {
-    my $pulse      = $self->pulse;
-    my $eqns       = $self->_make_diffeqs;
-    my $start_time = $self->start_time;
-    my $end_time   = $self->end_time;
+    my $pulse		= $self->pulse;
+    my @eqns		= $self->_make_diffeqs;
+    my $start_time	= $self->start_time;
+    my $end_time	= $self->end_time;
 
     if ($end_time == $start_time) {
       $end_time = $self->time_error * ($self->column->length - $pulse->location) / $self->pulse->velocity;
@@ -110,7 +110,7 @@ class Physics::UEMColumn {
     my $result;
     {
       local $SIG{__WARN__} = sub{ unless( $_[0] =~ /'ode_solver'/) { warn @_ } };
-      $result = ode_solver( $eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
+      $result = ode_solver( \@eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
     }
 
     #update the simulation/pulse parameters from the result
@@ -130,6 +130,7 @@ class Physics::UEMColumn {
   }
 
   method _make_diffeqs () {
+    my @return;
 
     my $pulse = $self->pulse;
 
@@ -209,64 +210,78 @@ class Physics::UEMColumn {
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
     };
 
-    ## Create Jacobian Code Reference ##
-    my $jac = sub {
+    push @return, $eqns;
 
-      ## Parameters ##
+    if (wantarray) {
+    
+      ## Create Jacobian Code Reference ##
+      my $jac = sub {
 
-      my ($t, $z, $v, $st, $sz, $et, $ez, $gt, $gz) = @_;
+        ## Parameters ##
 
-      if ($st < 0) {
-        warn "Sigma_t has gone negative at z=$z, t=$t\n";
-        return (undef) x 8;
-      }
-      if ($sz < 0) {
-        warn "Sigma_z has gone negative at z=$z, t=$t\n";
-        return (undef) x 8;
-      }
+        my ($t, $z, $v, $st, $sz, $et, $ez, $gt, $gz) = @_;
 
-      my $M_t = sum map { $_->($t, $z, $v) } @M_t;
-      my $M_z = sum map { $_->($t, $z, $v) } @M_z;
-      my $acc_z = sum map { $_->($t, $z, $v) } @acc_z;
+        if ($st < 0) {
+          warn "Sigma_t has gone negative at z=$z, t=$t\n";
+          return (undef) x 8;
+        }
+        if ($sz < 0) {
+          warn "Sigma_z has gone negative at z=$z, t=$t\n";
+          return (undef) x 8;
+        }
 
-      #avoid "mathematical use of undef" warnings
-      $M_t   ||= 0;
-      $M_z   ||= 0;
-      $acc_z ||= 0;
+        my $M_t = sum map { $_->($t, $z, $v) } @M_t;
+        my $M_z = sum map { $_->($t, $z, $v) } @M_z;
+        my $acc_z = sum map { $_->($t, $z, $v) } @acc_z;
 
-      ## Setup Differentials ##
-      my $Cn = $Ne * (qe**2) * k / (6 * sqrt(pi));
+        #avoid "mathematical use of undef" warnings
+        $M_t   ||= 0;
+        $M_z   ||= 0;
+        $acc_z ||= 0;
 
-      my $xi = sqrt($sz/$st);
-      my $L_t = L_t($xi);
-      my $L_z = L_z($xi);
-      my $dL_t = dL_tdxi($xi);
-      my $dL_z = dL_zdxi($xi);
+        ## Setup Differentials ##
+        my $Cn = $Ne * (qe**2) * k / (6 * sqrt(pi));
 
-      my ($dxidst, $dxidsz);
+        my $xi = sqrt($sz/$st);
+        my $L_t = L_t($xi);
+        my $L_z = L_z($xi);
+        my $dL_t = dL_tdxi($xi);
+        my $dL_z = dL_zdxi($xi);
 
-      my ($ddgtdst, $ddgtdsz, $ddgzdst, $ddgzdsz) = (
-        -(($gt/$st)**2) + $Cn*$L_t/(2*($st**(3/2))) + $Cn*$dxidst*$dL_t/sqrt($st) + $M_t,
-        $Cn*$dxidsz*$dL_t/sqrt($st),
-        $Cn*$dxidst*$dL_z/sqrt($sz),
-        -(($gz/$sz)**2) + $Cn*$L_z/(2*($sz**(3/2))) + $Cn*$dxidsz*$dL_z/sqrt($sz) + $M_z
-      );
+        my ($dxidst, $dxidsz) = (
+          -$xi/(2*$st),
+          1/(2*$st*$xi)
+        );
 
-      my $jacobian = [
-        [0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 2 / me, 0],
-        [0, 0, 0, 0, 0, 0, 0, 2 / me],
-        [0, 0, 4 * $gt * $et / (me * ($st**2)), 0, - 2 * $gt / ( me * $st ), 0, - 2 * $et / ( me * $st ), 0 ],
-        [0, 0, 0, 4 * $gz * $ez / (me * ($sz**2)), 0, - 2 * $gz / ( me * $sz ), 0, - 2 * $ez / ( me * $sz ) ],
-        [0, 0, $ddgtdst, $ddgtdsz, 1 / $st, 0, 2 * $gt / $st, 0 ],
-        [0, 0, $ddgzdst, $ddgzdsz, 0, 1 / $sz, 0, 2 * $gz / $sz ],
-      ];
+        my ($ddgtdst, $ddgtdsz, $ddgzdst, $ddgzdsz) = (
+          -(($gt/$st)**2) - $Cn*$L_t/(2*($st**(3/2))) + $Cn*$dxidst*$dL_t/sqrt($st) + $M_t,
+          $Cn*$dxidsz*$dL_t/sqrt($st),
+          $Cn*$dxidst*$dL_z/sqrt($sz),
+          -(($gz/$sz)**2) - $Cn*$L_z/(2*($sz**(3/2))) + $Cn*$dxidsz*$dL_z/sqrt($sz) + $M_z
+        );
 
-      return ($jacobian);
-    };
+        my $jacobian = [
+          [0, 1, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 2 / me, 0],
+          [0, 0, 0, 0, 0, 0, 0, 2 / me],
+          [0, 0, 4 * $gt * $et / (me * ($st**2)), 0, - 2 * $gt / ( me * $st ), 0, - 2 * $et / ( me * $st ), 0 ],
+          [0, 0, 0, 4 * $gz * $ez / (me * ($sz**2)), 0, - 2 * $gz / ( me * $sz ), 0, - 2 * $ez / ( me * $sz ) ],
+          [0, 0, $ddgtdst, $ddgtdsz, 1 / $st, 0, 2 * $gt / $st, 0 ],
+          [0, 0, $ddgzdst, $ddgzdsz, 0, 1 / $sz, 0, 2 * $gz / $sz ],
+        ];
 
-    return $eqns;
+        my $dfdt = [
+          0, 0, 0, 0, 0, 0, 0, 0
+        ];
+  
+        return ($jacobian, $dfdt);
+      };
+
+      push @return, $jac;
+    }
+
+    return @return;
 
   }
 

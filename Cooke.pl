@@ -32,7 +32,7 @@ my $column = Physics::UEMColumn::Column->new(
 my $sim = Physics::UEMColumn->new(
   column => $column,
   number => 1e8,
-  #solver_opts => { type => 'msadams' },
+  solver_opts => { type => 'bsimp_j' },
 );
 
 my $z_rf = 0.200;
