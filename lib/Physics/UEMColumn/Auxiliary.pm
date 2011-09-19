@@ -9,7 +9,7 @@ use Math::GSLx::ODEIV2;
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
   constants   => [ qw/ pi me qe epsilon_0 k vc / ],
-  model_funcs => [ qw/ L L_t L_z / ],
+  model_funcs => [ qw/ L L_t L_z dLdxi dL_tdxi dL_zdxi / ],
   util_funcs  => [ qw/ join_data / ],
   materials   => [ qw/ Ta / ],
 );
@@ -71,6 +71,32 @@ sub L_z {
   my $L = L($xi);
 
   return 3 * ($xi**2) * ( $xi * $L - 1) / (($xi**2) - 1)
+}
+
+sub dL_tdxi {
+  my ($xi) = @_;
+
+  return -3/2 * ((($xi**4)-1)*dLdxi($xi) - 4*$xi*L($xi) + ($xi**2) + 2) / ((($xi**2)-1)**2);
+}
+
+sub dL_zdxi {
+  my ($xi) = @_;
+
+  return 3*$xi * (($xi**2)*(($xi**2)-1)*dLdxi($xi) + $xi*(($xi**2)+3)*L($xi) + 2) / ((($xi**2)-1)**2);
+}
+
+sub dLdxi {
+  my ($xi) = @_;
+
+  if ($xi >= 1) {
+    return 1/(($xi**2)-1) * (1 - $xi*L($xi));
+
+  } elsif ( $xi >= 0) {
+    return $xi/2 * (log(1-($xi**2))-2) / ((1-($xi**2))**(1.5));
+
+  } else {
+    die "xi is out of range";
+  }
 }
 
 ## Tag: util_funcs ##
