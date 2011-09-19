@@ -235,7 +235,22 @@ class Physics::UEMColumn {
       $acc_z ||= 0;
 
       ## Setup Differentials ##
-      my ($ddgtdst, $ddgtdsz, $ddgzdst, $ddgzdsz);
+      my $Cn = $Ne * (qe**2) * k / (6 * sqrt(pi));
+
+      my $xi = sqrt($sz/$st);
+      my $L_t = L_t($xi);
+      my $L_z = L_z($xi);
+      my $dL_t = dL_tdxi($xi);
+      my $dL_z = dL_zdxi($xi);
+
+      my ($dxidst, $dxidsz);
+
+      my ($ddgtdst, $ddgtdsz, $ddgzdst, $ddgzdsz) = (
+        -(($gt/$st)**2) + $Cn*$L_t/(2*($st**(3/2))) + $Cn*$dxidst*$dL_t/sqrt($st) + $M_t,
+        $Cn*$dxidsz*$dL_t/sqrt($st),
+        $Cn*$dxidst*$dL_z/sqrt($sz),
+        -(($gz/$sz)**2) + $Cn*$L_z/(2*($sz**(3/2))) + $Cn*$dxidsz*$dL_z/sqrt($sz) + $M_z
+      );
 
       my $jacobian = [
         [0, 1, 0, 0, 0, 0, 0, 0],
