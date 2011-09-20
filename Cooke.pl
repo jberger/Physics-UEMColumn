@@ -29,16 +29,25 @@ my $column = Physics::UEMColumn::Column->new(
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
 );
 
+my $solver_opts = {
+  type => 'bsimp_j',
+#  type => 'msbdf_j',
+#  scaling => 'yp',
+#  epsrel => 1e-6,
+#  h_max => 5e-12,
+#  h_init => 1e-12 / 2,
+};
 my $sim = Physics::UEMColumn->new(
   column => $column,
   number => 1e8,
-  solver_opts => { type => 'bsimp_j' },
+  debug => 1,
+  solver_opts => $solver_opts,
 );
 
 my $z_rf = 0.200;
 my $l_mag_lens = 25.4e-3;
 my $cooke_sep = 0.050;
-my $str_mag = 20e-13;
+my $str_mag = 15e-13;
 
 my $lens1 = Physics::UEMColumn::MagneticLens->new(
   location => $z_rf - $cooke_sep,

@@ -15,6 +15,8 @@ class Physics::UEMColumn {
 
   use Physics::UEMColumn::Auxiliary ':all';
 
+  has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
+
   has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
   has 'pulse' => (
@@ -81,6 +83,7 @@ class Physics::UEMColumn {
 
       my $segment_result = $self->_evaluate_single_run();
       join_data( $result, $segment_result );
+      last if $self->debug;
     }
     
     my $stored_data = $self->pulse->data;
