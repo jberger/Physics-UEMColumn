@@ -18,7 +18,7 @@ class Physics::UEMColumn {
 
   has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
-  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is => 'ro', builder => '_make_transform' );
+  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is => 'ro', lazy => 1, builder => '_make_transform' );
 
   has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
@@ -44,10 +44,17 @@ class Physics::UEMColumn {
   has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
   #opts hashref passed directly to ode_solver
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
+
+  #other opts
   has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
+  has 'use_transform' => ( isa => 'Bool', is => 'ro', default => 0 );
 
   method _make_transform () {
-    return Physics::UEMColumn::Transform->new();
+    if ($self->use_transform) {
+      return Physics::UEMColumn::Transform::UmPsMe0Qe0->new();
+    } else {
+      return Physics::UEMColumn::Transform->new();
+    }
   }
 
   method _generate_pulse () {

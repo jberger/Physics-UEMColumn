@@ -30,7 +30,7 @@ my $column = Physics::UEMColumn::Column->new(
 );
 
 my $solver_opts = {
-  type => 'bsimp_j',
+#  type => 'bsimp_j',
 #  type => 'msbdf_j',
 #  scaling => 'yp',
 #  epsrel => 1e-6,
@@ -42,7 +42,8 @@ my $sim = Physics::UEMColumn->new(
   number => 1e8,
   debug => 1,
   solver_opts => $solver_opts,
-  need_jacobian => 1,
+#  need_jacobian => 1,
+  use_transform => 1,
 );
 
 my $z_rf = 0.200;
