@@ -126,6 +126,28 @@ class Physics::UEMColumn {
       $result = ode_solver( \@eqns, [ $trans->time($start_time), $trans->time($end_time), $steps ], $self->solver_opts);
     }
 
+    # inverse transform results
+    foreach (@$result) {
+      $_->[0] = $trans->time(     $_->[0], -1 );
+      $_->[1] = $trans->space(    $_->[1], -1 );
+      $_->[2] = $trans->velocity( $_->[2], -1 );
+      $_->[3] = $trans->sigma(    $_->[3], -1 );
+      $_->[4] = $trans->sigma(    $_->[4], -1 );
+      $_->[5] = $trans->eta(      $_->[5], -1 );
+      $_->[6] = $trans->eta(      $_->[6], -1 );
+      $_->[7] = $trans->gamma(    $_->[7], -1 );
+      $_->[8] = $trans->gamma(    $_->[8], -1 );
+    }
+    #  map { $_->[0] / $transform->{'time'} } @$result;
+    #  map { $_->[1] / $transform->{space} } @$result;
+    #  map { $_->[2] / $transform->{velocity} } @$result;
+    #  map { $_->[3] / $transform->{sigma} } @$result;
+    #  map { $_->[4] / $transform->{sigma} } @$result;
+    #  map { $_->[5] / $transform->{eta} } @$result;
+    #  map { $_->[6] / $transform->{eta} } @$result;
+    #  map { $_->[7] / $transform->{gamma} } @$result;
+    #  map { $_->[8] / $transform->{gamma} } @$result;
+
     #update the simulation/pulse parameters from the result
     #this sets up the next run if needed
     my $end_state = $result->[-1];
