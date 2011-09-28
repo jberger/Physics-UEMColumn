@@ -12,12 +12,13 @@ class Physics::UEMColumn {
   use Physics::UEMColumn::Pulse;
   use Physics::UEMColumn::Laser;
   use Physics::UEMColumn::Photocathode;
+  use Physics::UEMColumn::Transform;
 
   use Physics::UEMColumn::Auxiliary ':all';
 
   has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
-  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is = 'ro', predicate => 'has_transform' );
+  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is = 'ro', builder => '_make_transform' );
 
   has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
@@ -44,6 +45,10 @@ class Physics::UEMColumn {
   #opts hashref passed directly to ode_solver
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
   has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
+
+  method _make_transform () {
+    return Physics::UEMColumn::Transform->new();
+  }
 
   method _generate_pulse () {
     $self->column->photocathode->generate_pulse( $self->column, $self->number);
