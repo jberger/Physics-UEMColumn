@@ -127,26 +127,19 @@ class Physics::UEMColumn {
     }
 
     # inverse transform results
-    foreach (@$result) {
-      $_->[0] = $trans->time(     $_->[0], -1 );
-      $_->[1] = $trans->space(    $_->[1], -1 );
-      $_->[2] = $trans->velocity( $_->[2], -1 );
-      $_->[3] = $trans->sigma(    $_->[3], -1 );
-      $_->[4] = $trans->sigma(    $_->[4], -1 );
-      $_->[5] = $trans->eta(      $_->[5], -1 );
-      $_->[6] = $trans->eta(      $_->[6], -1 );
-      $_->[7] = $trans->gamma(    $_->[7], -1 );
-      $_->[8] = $trans->gamma(    $_->[8], -1 );
+    if ($trans->active) {
+      foreach (@$result) {
+        $_->[0] = $trans->time(     $_->[0], -1 );
+        $_->[1] = $trans->space(    $_->[1], -1 );
+        $_->[2] = $trans->velocity( $_->[2], -1 );
+        $_->[3] = $trans->sigma(    $_->[3], -1 );
+        $_->[4] = $trans->sigma(    $_->[4], -1 );
+        $_->[5] = $trans->eta(      $_->[5], -1 );
+        $_->[6] = $trans->eta(      $_->[6], -1 );
+        $_->[7] = $trans->gamma(    $_->[7], -1 );
+        $_->[8] = $trans->gamma(    $_->[8], -1 );
+      }
     }
-    #  map { $_->[0] / $transform->{'time'} } @$result;
-    #  map { $_->[1] / $transform->{space} } @$result;
-    #  map { $_->[2] / $transform->{velocity} } @$result;
-    #  map { $_->[3] / $transform->{sigma} } @$result;
-    #  map { $_->[4] / $transform->{sigma} } @$result;
-    #  map { $_->[5] / $transform->{eta} } @$result;
-    #  map { $_->[6] / $transform->{eta} } @$result;
-    #  map { $_->[7] / $transform->{gamma} } @$result;
-    #  map { $_->[8] / $transform->{gamma} } @$result;
 
     #update the simulation/pulse parameters from the result
     #this sets up the next run if needed
@@ -223,11 +216,16 @@ class Physics::UEMColumn {
       ## Column Element Effects ##
 
       #inverse transform the parameters to the effect code references
-      my @effect_params = ( 
-        $trans->time( $t, -1 ),
-        $trans->space( $z, -1 ),
-        $trans->velocity( $v, -1 ),
-      );
+      my @effect_params;
+      if ($trans->active) {
+        @effect_params = ( 
+          $trans->time( $t, -1 ),
+          $trans->space( $z, -1 ),
+          $trans->velocity( $v, -1 ),
+        );
+      } else {
+        @effect_params = ($t, $z, $v);
+      }
 
       my $M_t   = sum map { $_->(@effect_params) } @M_t;
       my $M_z   = sum map { $_->(@effect_params) } @M_z;
@@ -239,9 +237,11 @@ class Physics::UEMColumn {
       $acc_z ||= 0;
 
       #transform effect contributions
-      $M_t = $trans->effect( $M_t );
-      $M_z = $trans->effect( $M_z );
-      $acc_z = $trans->effect( $acc_z );
+      if ($trans->active) {
+        $M_t = $trans->effect( $M_t );
+        $M_z = $trans->effect( $M_z );
+        $acc_z = $trans->effect( $acc_z );
+      }
 
       ## Setup Differentials ##
 
@@ -289,11 +289,16 @@ class Physics::UEMColumn {
         ## Column Element Effects ##
 
         #inverse transform the parameters to the effect code references
-        my @effect_params = ( 
-          $trans->time( $t, -1 ),
-          $trans->space( $z, -1 ),
-          $trans->velocity( $v, -1 ),
-        );
+        my @effect_params;
+        if ($trans->active) {
+          @effect_params = ( 
+            $trans->time( $t, -1 ),
+            $trans->space( $z, -1 ),
+            $trans->velocity( $v, -1 ),
+          );
+        } else {
+          @effect_params = ($t, $z, $v);
+        }
 
         my $M_t   = sum map { $_->(@effect_params) } @M_t;
         my $M_z   = sum map { $_->(@effect_params) } @M_z;
@@ -305,9 +310,11 @@ class Physics::UEMColumn {
         $acc_z ||= 0;
 
         #transform effect contributions
-        $M_t = $trans->effect( $M_t );
-        $M_z = $trans->effect( $M_z );
-        $acc_z = $trans->effect( $acc_z );
+        if ($trans->active) {
+          $M_t = $trans->effect( $M_t );
+          $M_z = $trans->effect( $M_z );
+          $acc_z = $trans->effect( $acc_z );
+        }
 
         ## Setup Differentials ##
         my $Cn = $Ne * ($qe**2) * 1 / (4 * pi * $epsilon_0) * 1 / (6 * sqrt(pi));
