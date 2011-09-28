@@ -43,6 +43,7 @@ class Physics::UEMColumn {
   has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
   #opts hashref passed directly to ode_solver
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
+  has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
   method _generate_pulse () {
     $self->column->photocathode->generate_pulse( $self->column, $self->number);
@@ -217,7 +218,7 @@ class Physics::UEMColumn {
 
     push @return, $eqns;
 
-    if (wantarray) {
+    if ($self->need_jacobian) {
     
       ## Create Jacobian Code Reference ##
       my $jac = sub {

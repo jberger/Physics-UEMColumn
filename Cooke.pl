@@ -42,6 +42,7 @@ my $sim = Physics::UEMColumn->new(
   number => 1e8,
   debug => 1,
   solver_opts => $solver_opts,
+  need_jacobian => 1,
 );
 
 my $z_rf = 0.200;
