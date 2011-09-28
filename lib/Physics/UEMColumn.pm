@@ -104,6 +104,8 @@ class Physics::UEMColumn {
   }
 
   method _evaluate_single_run () {
+    my $trans = $self->transform;
+
     my $pulse		= $self->pulse;
     my @eqns		= $self->_make_diffeqs;
     my $start_time	= $self->start_time;
@@ -143,18 +145,20 @@ class Physics::UEMColumn {
   method _make_diffeqs () {
     my @return;
 
+    my $trans = $self->transform;
+
     my $pulse = $self->pulse;
 
     my $Ne = $self->pulse->number;
     my @init_conds = (
-      $pulse->location,
-      $pulse->velocity,
-      $pulse->sigma_t,
-      $pulse->sigma_z,
-      $pulse->eta_t,
-      $pulse->eta_z,
-      $pulse->gamma_t,
-      $pulse->gamma_z,
+      $trans->space(    $pulse->location ),
+      $trans->velocity( $pulse->velocity ),
+      $trans->sigma(    $pulse->sigma_t  ),
+      $trans->sigma(    $pulse->sigma_z  ),
+      $trans->eta(      $pulse->eta_t    ),
+      $trans->eta(      $pulse->eta_z    ),
+      $trans->gamma(    $pulse->gamma_t  ),
+      $trans->gamma(    $pulse->gamma_z  ),
     );
 
     #get the effect of all the elements in the column
