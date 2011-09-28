@@ -193,14 +193,28 @@ class Physics::UEMColumn {
         return (undef) x 8;
       }
 
-      my $M_t = sum map { $_->($t, $z, $v) } @M_t;
-      my $M_z = sum map { $_->($t, $z, $v) } @M_z;
-      my $acc_z = sum map { $_->($t, $z, $v) } @acc_z;
+      ## Column Element Effects ##
+
+      #inverse transform the parameters to the effect code references
+      my @effect_params = ( 
+        $trans->time( $t, -1 ),
+        $trans->space( $z, -1 ),
+        $trans->velocity( $v, -1 ),
+      );
+
+      my $M_t   = sum map { $_->(@effect_params) } @M_t;
+      my $M_z   = sum map { $_->(@effect_params) } @M_z;
+      my $acc_z = sum map { $_->(@effect_params) } @acc_z;
 
       #avoid "mathematical use of undef" warnings
       $M_t   ||= 0;
       $M_z   ||= 0;
       $acc_z ||= 0;
+
+      #transform effect contributions
+      $M_t = $trans->effect( $M_t );
+      $M_z = $trans->effect( $M_z );
+      $acc_z = $trans->effect( $acc_z );
 
       ## Setup Differentials ##
 
@@ -245,14 +259,28 @@ class Physics::UEMColumn {
           return (undef) x 8;
         }
 
-        my $M_t = sum map { $_->($t, $z, $v) } @M_t;
-        my $M_z = sum map { $_->($t, $z, $v) } @M_z;
-        my $acc_z = sum map { $_->($t, $z, $v) } @acc_z;
+        ## Column Element Effects ##
+
+        #inverse transform the parameters to the effect code references
+        my @effect_params = ( 
+          $trans->time( $t, -1 ),
+          $trans->space( $z, -1 ),
+          $trans->velocity( $v, -1 ),
+        );
+
+        my $M_t   = sum map { $_->(@effect_params) } @M_t;
+        my $M_z   = sum map { $_->(@effect_params) } @M_z;
+        my $acc_z = sum map { $_->(@effect_params) } @acc_z;
 
         #avoid "mathematical use of undef" warnings
         $M_t   ||= 0;
         $M_z   ||= 0;
         $acc_z ||= 0;
+
+        #transform effect contributions
+        $M_t = $trans->effect( $M_t );
+        $M_z = $trans->effect( $M_z );
+        $acc_z = $trans->effect( $acc_z );
 
         ## Setup Differentials ##
         my $Cn = $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt(pi));
