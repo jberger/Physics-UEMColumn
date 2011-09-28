@@ -17,6 +17,8 @@ class Physics::UEMColumn {
 
   has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
+  # possibly do transform here, in branches
+
   has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
   has 'pulse' => (
