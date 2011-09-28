@@ -34,6 +34,10 @@ class Physics::UEMColumn::Transform {
     return $input;
   }
 
+  method effect (Num $input, Num $direction = 1) {
+    return $input;
+  }
+
   method charge (Num $input, Num $direction = 1) {
     return $input;
   }
