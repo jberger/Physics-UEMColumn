@@ -211,11 +211,11 @@ class Physics::UEMColumn {
 
       $dgt = 
         ($et + ($gt**2) / $st) 
-        + $Ne * (qe**2) * k / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
+        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
         - $M_t * $st;
       $dgz = 
         ($ez + ($gz**2) / $sz) 
-        + $Ne * (qe**2) * k / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
+        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
         - $M_z * $sz;
 
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
@@ -251,7 +251,7 @@ class Physics::UEMColumn {
         $acc_z ||= 0;
 
         ## Setup Differentials ##
-        my $Cn = $Ne * (qe**2) * k / (6 * sqrt(pi));
+        my $Cn = $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt(pi));
 
         my $xi = sqrt($sz/$st);
         my $L_t = L_t($xi);
