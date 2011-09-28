@@ -42,7 +42,7 @@ class Physics::UEMColumn::Transform {
     return $input;
   }
 
-  method permitivity (Num $input, Num $direction = 1) {
+  method permittivity (Num $input, Num $direction = 1) {
     return $input;
   }
 

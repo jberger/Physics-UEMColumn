@@ -161,6 +161,11 @@ class Physics::UEMColumn {
       $trans->gamma(    $pulse->gamma_z  ),
     );
 
+    #setup transformed constants
+    my $me = $trans->mass( me );
+    my $qe = $trans->charge( qe );
+    my $epsilon_0 = $trans->permittivity( epsilon_0 );
+
     #get the effect of all the elements in the column
     my $elements = $self->column->elements;
     my (@M_t, @M_z, @acc_z);
@@ -221,19 +226,19 @@ class Physics::UEMColumn {
       $dz = $v;
       $dv = $acc_z;
 
-      $dst = 2 * $gt / me;
-      $dsz = 2 * $gz / me;
+      $dst = 2 * $gt / $me;
+      $dsz = 2 * $gz / $me;
 
-      $det = - 2 * $gt * $et / ( me * $st );
-      $dez = - 2 * $gz * $ez / ( me * $sz );
+      $det = - 2 * $gt * $et / ( $me * $st );
+      $dez = - 2 * $gz * $ez / ( $me * $sz );
 
       $dgt = 
         ($et + ($gt**2) / $st) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
+        + $Ne * ($qe**2) * 1 / (4 * pi * $epsilon_0) * 1 / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
         - $M_t * $st;
       $dgz = 
         ($ez + ($gz**2) / $sz) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
+        + $Ne * ($qe**2) * 1 / (4 * pi * $epsilon_0) * 1 / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
         - $M_z * $sz;
 
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
@@ -283,7 +288,7 @@ class Physics::UEMColumn {
         $acc_z = $trans->effect( $acc_z );
 
         ## Setup Differentials ##
-        my $Cn = $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt(pi));
+        my $Cn = $Ne * ($qe**2) * 1 / (4 * pi * $epsilon_0) * 1 / (6 * sqrt(pi));
 
         my $xi = sqrt($sz/$st);
         my $L_t = L_t($xi);
@@ -306,10 +311,10 @@ class Physics::UEMColumn {
         my $jacobian = [
           [0, 1, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 2 / me, 0],
-          [0, 0, 0, 0, 0, 0, 0, 2 / me],
-          [0, 0, 4 * $gt * $et / (me * ($st**2)), 0, - 2 * $gt / ( me * $st ), 0, - 2 * $et / ( me * $st ), 0 ],
-          [0, 0, 0, 4 * $gz * $ez / (me * ($sz**2)), 0, - 2 * $gz / ( me * $sz ), 0, - 2 * $ez / ( me * $sz ) ],
+          [0, 0, 0, 0, 0, 0, 2 / $me, 0],
+          [0, 0, 0, 0, 0, 0, 0, 2 / $me],
+          [0, 0, 4 * $gt * $et / ($me * ($st**2)), 0, - 2 * $gt / ( $me * $st ), 0, - 2 * $et / ( $me * $st ), 0 ],
+          [0, 0, 0, 4 * $gz * $ez / ($me * ($sz**2)), 0, - 2 * $gz / ( $me * $sz ), 0, - 2 * $ez / ( $me * $sz ) ],
           [0, 0, $ddgtdst, $ddgtdsz, 1 / $st, 0, 2 * $gt / $st, 0 ],
           [0, 0, $ddgzdst, $ddgzdsz, 0, 1 / $sz, 0, 2 * $gz / $sz ],
         ];
