@@ -123,7 +123,7 @@ class Physics::UEMColumn {
     my $result;
     {
       local $SIG{__WARN__} = sub{ unless( $_[0] =~ /'ode_solver'/) { warn @_ } };
-      $result = ode_solver( \@eqns, [ $start_time, $end_time, $steps ], $self->solver_opts);
+      $result = ode_solver( \@eqns, [ $trans->time($start_time), $trans->time($end_time), $steps ], $self->solver_opts);
     }
 
     #update the simulation/pulse parameters from the result
