@@ -18,7 +18,7 @@ class Physics::UEMColumn {
 
   has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
-  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is = 'ro', builder => '_make_transform' );
+  has 'transform' => ( isa => 'Physics::UEMColumn::Transform', is => 'ro', builder => '_make_transform' );
 
   has 'number' => ( isa => 'Num', is => 'rw', required => 1);
 
