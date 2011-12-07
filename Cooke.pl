@@ -9,7 +9,7 @@ use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':materials';
 
 use PDL;
-use PDL::Graphics::PGPLOT::Window;
+use PDL::Graphics::Gnuplot qw/plotlines/;
 
 my $laser = Physics::UEMColumn::Laser->new(
   width => 1e-3,
@@ -74,14 +74,13 @@ $sim->column->add_element($rf_cav);
 
 my $result = pdl( $sim->propagate );
 
-my $win = pgwin( Device => '/xs');
-#$win->line( $result->slice('(1),'), $result->slice('(2),') / $result->at(2,-1) );
 my $st = $result->slice('(3),');
 my $sz = $result->slice('(4),');
 
-$win->line( $result->slice('(1),'), sqrt( $st / maximum($st) ) );
-$win->hold();
-$win->line( $result->slice('(1),'), sqrt( $sz / maximum($sz) ) );
+plotlines( 
+  $result->slice('(1),'), sqrt( $st / maximum($st) ), 
+  $result->slice('(1),'), sqrt( $sz / maximum($sz) ),
+);
 #print $result;
 
 
