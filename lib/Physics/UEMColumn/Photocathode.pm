@@ -3,12 +3,14 @@ use Method::Signatures::Modifiers;
 
 class Physics::UEMColumn::Photocathode {
 
-  use Physics::UEMColumn::Types qw/Energy/;
+  use MooseX::Types::NumUnit qw/num_of_unit/;
   use Physics::UEMColumn::Pulse;
   use Physics::UEMColumn::Auxiliary qw/:constants/;
 
-  has 'energy_fermi' => ( isa => Energy, is => 'ro', required => 1, coerce => 1); 
-  has 'work_function' => ( isa => Energy, is => 'ro', required => 1, coerce => 1);
+  my $type_energy = num_of_unit( 'J' );
+
+  has 'energy_fermi' => ( isa => $type_energy, is => 'ro', required => 1 ); 
+  has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
   has 'location' => ( isa => 'Num', is => 'ro', default => 0 );
 
   method generate_pulse (Physics::UEMColumn::Column $column, Num $num) {

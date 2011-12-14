@@ -14,7 +14,7 @@ use PDL::Graphics::Gnuplot qw/plotlines/;
 my $laser = Physics::UEMColumn::Laser->new(
   width => 1e-3,
   duration => 1e-12,
-  energy => '4.75eV',
+  energy => '4.75 eV',
 );
 
 my $acc = Physics::UEMColumn::DCAccelerator->new(
