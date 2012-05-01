@@ -206,12 +206,12 @@ class Physics::UEMColumn {
       $dez = - 2 * $gz * $ez / ( me * $sz );
 
       $dgt = 
-        ($et + ($gt**2) / $st) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
+        ($et + ($gt**2) / $st) / me
+        + $Ne * (qe**2) / (4 * pi * epsilon_0) / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
         - $M_t * $st;
       $dgz = 
-        ($ez + ($gz**2) / $sz) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
+        ($ez + ($gz**2) / $sz) / me
+        + $Ne * (qe**2) / (4 * pi * epsilon_0) / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
         - $M_z * $sz;
 
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);
