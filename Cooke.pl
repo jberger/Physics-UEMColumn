@@ -23,26 +23,26 @@ my $acc = Physics::UEMColumn::DCAccelerator->new(
 );
 
 my $column = Physics::UEMColumn::Column->new(
-  'length' => 0.350, 
+  'length' => 0.500, 
   laser => $laser,
   accelerator => $acc,
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
 );
 
 my $solver_opts = {
-  type => 'bsimp_j',
+#  type => 'bsimp_j',
 #  type => 'msbdf_j',
 #  scaling => 'yp',
-#  epsrel => 1e-6,
-#  h_max => 5e-12,
-#  h_init => 1e-12 / 2,
+#  epsabs => 1e-20,
+  h_max => 5e-12,
+  h_init => 1e-12 / 2,
 };
 my $sim = Physics::UEMColumn->new(
   column => $column,
-  number => 1e8,
+  number => 1,
   debug => 1,
   solver_opts => $solver_opts,
-  need_jacobian => 1,
+#  need_jacobian => 1,
 );
 
 my $z_rf = 0.200;
@@ -81,13 +81,6 @@ plotlines(
   $z, sqrt( $st / maximum($st) ), 
   $z, sqrt( $sz / maximum($sz) ),
 );
-#print $result;
-
-plotlines(
-  $z, $st*$result->slice('(5),')
-);
-plotlines(
-  $z, $sz*$result->slice('(6),')
-);
+#print $result;#->slice(',(-1)');
 
 

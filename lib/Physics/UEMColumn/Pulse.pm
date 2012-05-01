@@ -36,14 +36,11 @@ class Physics::UEMColumn::Pulse {
   }
 
   method _make_eta_t () {
-    my $energy_fermi  = qe * $self->energy_fermi;
-    my $energy_laser  = qe * $self->energy_laser;
-    my $work_function = qe * $self->work_function;
-
-    return me * $energy_fermi / 3 * ( $energy_laser - $work_function ) / ( $energy_laser + $energy_fermi );
+    #me * $energy_fermi / 3 * ( $energy_laser - $work_function ) / ( $energy_laser + $energy_fermi );
+    return 0;
   }
   method _make_eta_z () {
-    return $self->_make_eta_t() / 4;
+    return $self->eta_t() / 4;
   }
 
   method _make_gamma_t () {
