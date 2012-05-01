@@ -73,14 +73,21 @@ $sim->column->add_element($rf_cav);
 
 my $result = pdl( $sim->propagate );
 
+my $z = $result->slice('(1),');
 my $st = $result->slice('(3),');
 my $sz = $result->slice('(4),');
 
 plotlines( 
-  $result->slice('(1),'), sqrt( $st / maximum($st) ), 
-  $result->slice('(1),'), sqrt( $sz / maximum($sz) ),
+  $z, sqrt( $st / maximum($st) ), 
+  $z, sqrt( $sz / maximum($sz) ),
 );
 #print $result;
 
+plotlines(
+  $z, $st*$result->slice('(5),')
+);
+plotlines(
+  $z, $sz*$result->slice('(6),')
+);
 
 

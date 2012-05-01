@@ -140,8 +140,10 @@ class Physics::UEMColumn {
     my @return;
 
     my $pulse = $self->pulse;
+    my $Ne = $pulse->number;
+    my $lg2_t = $pulse->liouville_gamma2_t;
+    my $lg2_z = $pulse->liouville_gamma2_z;
 
-    my $Ne = $self->pulse->number;
     my @init_conds = (
       $pulse->location,
       $pulse->velocity,
@@ -206,12 +208,12 @@ class Physics::UEMColumn {
       $dez = - 2 * $gz * $ez / ( me * $sz );
 
       $dgt = 
-        ($et + ($gt**2) / $st) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
+        ($lg2_t + ($gt**2)) / ( me * $st ) 
+        + $Ne * (qe**2) / (4 * pi * epsilon_0) / (6 * sqrt($st * pi)) * L_t(sqrt($sz/$st))
         - $M_t * $st;
       $dgz = 
-        ($ez + ($gz**2) / $sz) 
-        + $Ne * (qe**2) * 1 / (4 * pi * epsilon_0) * 1 / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
+        ($lg2_z + ($gz**2)) / ( me * $sz ) 
+        + $Ne * (qe**2) / (4 * pi * epsilon_0) / (6 * sqrt($sz * pi)) * L_z(sqrt($sz/$st))
         - $M_z * $sz;
 
       return ($dz, $dv, $dst, $dsz, $det, $dez, $dgt, $dgz);

@@ -20,6 +20,8 @@ class Physics::UEMColumn::Pulse {
   has 'eta_z'    => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_eta_z' );
   has 'gamma_t'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_t' );
   has 'gamma_z'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_z' );
+  has 'liouville_gamma2_t' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_lg2_t' );
+  has 'liouville_gamma2_z' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_lg2_z' );
 
   # propagation history
   has 'data' => ( isa => 'ArrayRef', is => 'rw', default => sub { [] } );
@@ -49,6 +51,13 @@ class Physics::UEMColumn::Pulse {
   }
   method _make_gamma_z () {
     return 0;
+  }
+
+  method _make_lg2_t () {
+    return $self->sigma_t * $self->eta_t;
+  }
+  method _make_lg2_z () {
+    return $self->sigma_z * $self->eta_z;
   }
 
 }
