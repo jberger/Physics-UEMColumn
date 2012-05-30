@@ -6,7 +6,7 @@ class Physics::UEMColumn {
   use Carp;
   use List::Util 'sum';
 
-  use Math::GSLx::ODEIV2;
+  use PerlGSL::DiffEq;
 
   use Physics::UEMColumn::Column;
   use Physics::UEMColumn::Element;

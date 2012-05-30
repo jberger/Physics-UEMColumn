@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Math::Trig;
-use Math::GSLx::ODEIV2;
 
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
