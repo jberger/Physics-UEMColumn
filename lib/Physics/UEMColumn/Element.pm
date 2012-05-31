@@ -58,8 +58,28 @@ class Physics::UEMColumn::DCAccelerator
 
     };
 
+    my $acc_mt = sub {
+      my ($t, $pulse_z, $pulse_v) = @_;
+
+      if ($pulse_z / $anode_pos > $cutoff) {
+        return 0;
+      }
+
+      return - $force * $sharpness / ( 4 * $anode_pos ) * sech( ($pulse_z - $anode_pos) * $sharpness / $anode_pos ) ** 2;
+    };
+
+    my $acc_mz = sub {
+      my ($t, $pulse_z, $pulse_v) = @_;
+
+      if ($pulse_z / $anode_pos > $cutoff) {
+        return 0;
+      }
+
+      return $force * $sharpness / ( 2 * $anode_pos ) * sech( ($pulse_z - $anode_pos) * $sharpness / $anode_pos ) ** 2;
+    };
+
     #TODO add anode effects
-    return {acc => $acc};
+    return {acc => $acc, M_t => $acc_mt, M_z => $acc_mz};
 
   }
 
