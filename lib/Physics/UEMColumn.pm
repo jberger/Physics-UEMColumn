@@ -47,7 +47,7 @@ class Physics::UEMColumn {
   #has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
   method _generate_pulse () {
-    $self->column->photocathode->generate_pulse( $self->column, $self->number);
+    $self->column->photocathode->generate_pulse( $self->number);
   }
 
   method _set_step_width () {

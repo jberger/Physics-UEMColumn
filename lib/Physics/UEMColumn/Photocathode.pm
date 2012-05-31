@@ -12,8 +12,12 @@ class Physics::UEMColumn::Photocathode {
   has 'energy_fermi' => ( isa => $type_energy, is => 'ro', required => 1 ); 
   has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
   has 'location' => ( isa => 'Num', is => 'ro', default => 0 );
+  has 'column' => ( isa => 'Physics::UEMColumn::Column', is => 'rw', predicate => 'has_column' );
 
-  method generate_pulse (Physics::UEMColumn::Column $column, Num $num) {
+  method generate_pulse ( Num $num ) {
+    die 'Photocathode requires access to column object' unless $self->has_column;
+    my $column = $self->column;
+
     my $laser = $column->laser;
     my $acc = $column->accelerator;
 

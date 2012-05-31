@@ -21,6 +21,7 @@ class Physics::UEMColumn::Column {
 
   method BUILD (Item $params) {
     $self->add_element( $self->accelerator );
+    $self->photocathode->column( $self );
   } 
 
 }
