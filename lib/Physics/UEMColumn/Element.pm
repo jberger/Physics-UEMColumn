@@ -28,31 +28,38 @@ class Physics::UEMColumn::DCAccelerator
   extends Physics::UEMColumn::Accelerator {
 
   use Physics::UEMColumn::Auxiliary ':constants';
+  use Math::Trig qw/tanh sech/;
 
   has '+location' => ( required => 0, default => 0 );
   has 'voltage' => ( isa => 'Num', is => 'ro', required => 1 );
+  has 'sharpness' => ( isa => 'Num', is => 'ro', default => 10 );
 
   override field () {
     $self->voltage / $self->length;
   }
 
   override effect () {
-    my $acc_length = $self->length;
+    my $anode_pos = $self->length;
     my $acc_voltage = $self->voltage;
+    my $force = qe * $acc_voltage / $anode_pos;
+    my $sharpness = $self->sharpness;
 
-    my $code = sub {
+    # cutoff is used oddly here
+    my $cutoff = $self->cutoff;
+
+    my $acc = sub {
       my ($t, $pulse_z, $pulse_v) = @_;
 
-      if ($pulse_z > $acc_length) {
+      if ($pulse_z / $anode_pos > $cutoff) {
         return 0;
       }
 
-      return qe * $acc_voltage / ( me * $acc_length );
+      return $force / ( 2 * me ) * ( 1 - tanh( ($pulse_z - $anode_pos) * $sharpness / $anode_pos ) );
 
     };
 
     #TODO add anode effects
-    return {acc => $code};
+    return {acc => $acc};
 
   }
 
