@@ -9,7 +9,7 @@ use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':materials';
 
 use PDL;
-use PDL::Graphics::Gnuplot qw/plotlines/;
+use PDL::Graphics::Prima::Simple [700,500];
 
 my $laser = Physics::UEMColumn::Laser->new(
   width => 1e-3,
@@ -23,17 +23,13 @@ my $acc = Physics::UEMColumn::DCAccelerator->new(
 );
 
 my $column = Physics::UEMColumn::Column->new(
-  'length' => 0.500, 
+  'length' => 0.400, 
   laser => $laser,
   accelerator => $acc,
   photocathode => Physics::UEMColumn::Photocathode->new(Ta),
 );
 
 my $solver_opts = {
-#  type => 'bsimp_j',
-#  type => 'msbdf_j',
-#  scaling => 'yp',
-#  epsabs => 1e-20,
   h_max => 5e-12,
   h_init => 1e-12 / 2,
 };
@@ -42,13 +38,12 @@ my $sim = Physics::UEMColumn->new(
   number => 1,
   debug => 1,
   solver_opts => $solver_opts,
-#  need_jacobian => 1,
 );
 
 my $z_rf = 0.200;
 my $l_mag_lens = 25.4e-3;
 my $cooke_sep = 0.050;
-my $str_mag = 15e-13;
+my $str_mag = 33e-13;
 
 my $lens1 = Physics::UEMColumn::MagneticLens->new(
   location => $z_rf - $cooke_sep,
@@ -77,10 +72,24 @@ my $z = $result->slice('(1),');
 my $st = $result->slice('(3),');
 my $sz = $result->slice('(4),');
 
-plotlines( 
-  $z, sqrt( $st / maximum($st) ), 
-  $z, sqrt( $sz / maximum($sz) ),
+plot(
+  -st => ds::Pair( 
+    $z, sqrt( $st / maximum($st) ),
+    colors => pdl(255,0,0)->rgb_to_color,
+    plotType => ppair::Lines,
+    lineWidths => 3,
+  ),
+  -sz => ds::Pair( 
+    $z, sqrt( $sz / maximum($sz) ),
+    colors => pdl(0,255,0)->rgb_to_color,
+    plotType => ppair::Lines,
+    lineWidths => 3,
+  ),
+  x => { label => 'Position (m)' },
 );
-#print $result;#->slice(',(-1)');
+
+my $min_length = sqrt( 2 * minimum($sz)->sclr );
+my $min_duration = $min_length / $sim->pulse->velocity;
+printf "Min Length: %.2fnm (%.2ffs)\n", $min_length/1e-9, $min_duration/1e-15;
 
 
