@@ -3,6 +3,8 @@ use Method::Signatures::Modifiers;
 
 class Physics::UEMColumn::Column {
 
+  use MooseX::Types::NumUnit qw/num_of_unit/;
+
   has laser => ( isa => 'Physics::UEMColumn::Laser', is => 'ro', required => 1);
   has accelerator => ( isa => 'Physics::UEMColumn::Accelerator', is => 'ro', required => 1);
   has photocathode => ( isa => 'Physics::UEMColumn::Photocathode', is => 'ro', required => 1);
@@ -17,7 +19,7 @@ class Physics::UEMColumn::Column {
     default => sub{ [] },
   );
 
-  has 'length' => ( isa => 'Num', is => 'rw', required => 1 );
+  has 'length' => ( isa => num_of_unit('m'), is => 'rw', required => 1 );
 
   method BUILD (Item $params) {
     $self->add_element( $self->accelerator );

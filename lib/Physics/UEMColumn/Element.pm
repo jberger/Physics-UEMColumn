@@ -3,8 +3,11 @@ use Method::Signatures::Modifiers;
 
 class Physics::UEMColumn::Element {
 
-  has 'location' => ( isa => 'Num', is => 'ro', required => 1);
-  has 'length'   => ( isa => 'Num', is => 'ro', required => 1);
+  use MooseX::Types::NumUnit qw/num_of_unit/;
+  my $meters = num_of_unit('m');
+
+  has 'location' => ( isa => $meters, is => 'ro', required => 1);
+  has 'length'   => ( isa => $meters, is => 'ro', required => 1);
 
   has 'cutoff'   => ( isa => 'Num', is => 'ro', default => 3); # relative distance to ignore effect
 
@@ -29,9 +32,10 @@ class Physics::UEMColumn::DCAccelerator
 
   use Physics::UEMColumn::Auxiliary ':constants';
   use Math::Trig qw/tanh sech/;
+  use MooseX::Types::NumUnit qw/num_of_unit/;
 
   has '+location' => ( required => 0, default => 0 );
-  has 'voltage' => ( isa => 'Num', is => 'ro', required => 1 );
+  has 'voltage' => ( isa => num_of_unit('V'), is => 'ro', required => 1 );
   has 'sharpness' => ( isa => 'Num', is => 'ro', default => 10 );
 
   override field () {
@@ -131,9 +135,10 @@ class Physics::UEMColumn::RFCavity
   extends Physics::UEMColumn::Element {
 
   use Physics::UEMColumn::Auxiliary ':constants';
+  use MooseX::Types::NumUnit qw/num_of_unit/;
 
-  has 'strength'  => (isa => 'Num', is => 'rw', required => 1);
-  has 'frequency' => (isa => 'Num', is => 'ro', required => 1);
+  has 'strength'  => (isa => num_of_unit('v/m'), is => 'rw', required => 1);
+  has 'frequency' => (isa => num_of_unit('Hz') , is => 'ro', required => 1);
   #has 'radius'    => (isa => 'Num', is => 'ro', required => 1);
 
   has 'phase'     => (isa => 'Num', is => 'ro', default => 0);

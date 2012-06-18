@@ -4,22 +4,23 @@ use Method::Signatures::Modifiers;
 class Physics::UEMColumn::Pulse {
 
   use Physics::UEMColumn::Auxiliary ':constants';
+  use MooseX::Types::NumUnit qw/num_of_unit/;
 
   # user specified attributes
-  has 'velocity' => ( isa => 'Num', is => 'rw', required => 1 );
-#  has 'width'    => ( isa => 'Num', is => 'rw', required => 1 );
-#  has 'duration' => ( isa => 'Num', is => 'rw', required => 1 );
+  has 'velocity' => ( isa => num_of_unit('m/s'), is => 'rw', required => 1 );
 
-  has 'location' => ( isa => 'Num', is => 'rw', default => 0 );
+  has 'location' => ( isa => num_of_unit('m'), is => 'rw', default => 0 );
   has 'number'   => ( isa => 'Num', is => 'rw', default => 1 );
 
   # variance attributes
-  has 'sigma_t'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_sigma_t' );
-  has 'sigma_z'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_sigma_z' );
-  has 'eta_t'    => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_eta_t' );
-  has 'eta_z'    => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_eta_z' );
-  has 'gamma_t'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_t' );
-  has 'gamma_z'  => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_gamma_z' );
+  has 'sigma_t'  => ( isa => num_of_unit('m^2'), is => 'rw', lazy => 1, builder => '_make_sigma_t' );
+  has 'sigma_z'  => ( isa => num_of_unit('m^2'), is => 'rw', lazy => 1, builder => '_make_sigma_z' );
+  has 'eta_t'    => ( isa => num_of_unit('(kg m / s)^2'), is => 'rw', lazy => 1, builder => '_make_eta_t' );
+  has 'eta_z'    => ( isa => num_of_unit('(kg m / s)^2'), is => 'rw', lazy => 1, builder => '_make_eta_z' );
+  has 'gamma_t'  => ( isa => num_of_unit('kg m^2 / s'), is => 'rw', lazy => 1, builder => '_make_gamma_t' );
+  has 'gamma_z'  => ( isa => num_of_unit('kg m^2 / s'), is => 'rw', lazy => 1, builder => '_make_gamma_z' );
+
+  # derived quantities (units of gamma^2)
   has 'liouville_gamma2_t' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_lg2_t' );
   has 'liouville_gamma2_z' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_make_lg2_z' );
 

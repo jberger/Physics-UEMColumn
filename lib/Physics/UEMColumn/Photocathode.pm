@@ -11,7 +11,7 @@ class Physics::UEMColumn::Photocathode {
 
   has 'energy_fermi' => ( isa => $type_energy, is => 'ro', required => 1 ); 
   has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
-  has 'location' => ( isa => 'Num', is => 'ro', default => 0 );
+  has 'location' => ( isa => num_of_unit('m'), is => 'ro', default => 0 );
   has 'column' => ( isa => 'Physics::UEMColumn::Column', is => 'rw', predicate => 'has_column' );
 
   method generate_pulse ( Num $num ) {
