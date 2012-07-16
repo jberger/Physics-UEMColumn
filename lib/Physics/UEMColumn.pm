@@ -27,6 +27,7 @@ class Physics::UEMColumn {
     is => 'ro',
     lazy => 1,
     builder => '_generate_pulse',
+    predicate => 'has_pulse',
   );
 
   has 'column' => ( 
@@ -46,8 +47,14 @@ class Physics::UEMColumn {
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
   #has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
+  method BUILD () {
+    unless ( $self->has_pulse && $self->column->can_make_pulse ) {
+      die "You must either provide a pulse object to the simulation object or else include laser, accelerator and photocathode objects to the column";
+    }
+  }
+
   method _generate_pulse () {
-    $self->column->photocathode->generate_pulse( $self->number);
+    $self->column->photocathode->generate_pulse( $self->number );
   }
 
   method _set_step_width () {
