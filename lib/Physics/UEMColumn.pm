@@ -20,7 +20,7 @@ class Physics::UEMColumn {
 
   # possibly do transform here, in branches
 
-  has 'number' => ( isa => 'Num', is => 'rw', required => 1);
+  has 'number' => ( isa => 'Num', is => 'rw', predicate => 'has_number');
 
   has 'pulse' => (
     isa => 'Physics::UEMColumn::Pulse',
@@ -47,9 +47,18 @@ class Physics::UEMColumn {
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
   #has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
+  # check for proper combinations of inputs
   method BUILD ($param) {
     unless ( $self->has_pulse or $self->column->can_make_pulse ) {
       die "You must either provide a pulse object to the simulation object or else include laser, accelerator and photocathode objects to the column";
+    }
+
+    if ( $self->has_pulse and $self->has_number ) {
+      carp "'number' attr is superfluous when a pulse object is provided";
+    }
+
+    unless ( $self->has_pulse or $self->has_number ) {
+      die "You must provide either a pulse object or a number of electrons to create";
     }
   }
 

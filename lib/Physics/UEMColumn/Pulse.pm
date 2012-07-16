@@ -15,8 +15,8 @@ class Physics::UEMColumn::Pulse {
   has 'number'   => ( isa => 'Num', is => 'rw', default => 1 );
 
   my $unit_sigma = num_of_unit('m^2');
-  my $unit_eta   = num_of_unit('m^2 / s^2');
-  my $unit_gamma = num_of_unit('m^2 / s');
+  my $unit_eta   = num_of_unit('(kg m / s)^2');
+  my $unit_gamma = num_of_unit('kg m^2 / s');
 
   # variance attributes
   has 'sigma_t'  => ( isa => $unit_sigma, is => 'rw', lazy => 1, builder => '_make_sigma_t' );

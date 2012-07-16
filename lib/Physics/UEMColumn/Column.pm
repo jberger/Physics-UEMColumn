@@ -22,8 +22,10 @@ class Physics::UEMColumn::Column {
   has 'length' => ( isa => num_of_unit('m'), is => 'rw', required => 1 );
 
   method BUILD (Item $params) {
-    $self->add_element( $self->accelerator );
-    $self->photocathode->column( $self );
+    if ($self->has_accelerator && $self->has_photocathode) {
+      $self->add_element( $self->accelerator );
+      $self->photocathode->column( $self );
+    }
   } 
 
   method can_make_pulse () {
