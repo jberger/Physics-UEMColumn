@@ -47,8 +47,8 @@ class Physics::UEMColumn {
   has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
   #has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
-  method BUILD () {
-    unless ( $self->has_pulse && $self->column->can_make_pulse ) {
+  method BUILD ($param) {
+    unless ( $self->has_pulse or $self->column->can_make_pulse ) {
       die "You must either provide a pulse object to the simulation object or else include laser, accelerator and photocathode objects to the column";
     }
   }
