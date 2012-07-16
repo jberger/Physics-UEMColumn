@@ -3,6 +3,9 @@ use warnings;
 
 use Test::More;
 
+#TODO remove after done writing
+END{ done_testing(); }
+
 use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':constants';
 
@@ -35,5 +38,10 @@ my $result = $sim->propagate;
 ok( $result, 'Got a result from simulation' );
 is( ref $result, 'ARRAY', 'Result is an arrayref' );
 
-done_testing;
+# $result->[i][0] is time
+is( $result->[0][0], 0, 'By default result starts at t=0' );
+
+# $result->[i][1] is position of electron (z)
+is( $result->[0][1], 0, 'Resulting pulse starts at z=0' );
+ok( $result->[-1][1] > $column->length, 'Resulting pulse position is beyond the end of the column' );
 
