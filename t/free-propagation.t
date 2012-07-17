@@ -64,7 +64,7 @@ my $low = make_sim();
 my $high = make_sim(1e6);
 
 SKIP: {
-  skip 'result dimension is unequal, this is not guaranteed', 1 unless @$low == @$high;
+  skip 'result dimension is unequal, this is not guaranteed', 3 unless @$low == @$high;
   is( $low->[-1][0], $high->[-1][0], 'Final time of two like simulations is equal' );
   
   my (@dw_t, @dw_z);
