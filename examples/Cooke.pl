@@ -3,7 +3,11 @@
 use strict;
 use warnings;
 
-use lib 'lib';
+BEGIN {
+  for my $lib ( 'lib', '../lib' ) {
+    unshift @INC, $lib if -d $lib;
+  }
+}
 
 use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':materials';
