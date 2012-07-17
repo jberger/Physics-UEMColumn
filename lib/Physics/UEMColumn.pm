@@ -16,6 +16,9 @@ class Physics::UEMColumn {
 
   use Physics::UEMColumn::Auxiliary ':all';
 
+  use MooseX::Types::NumUnit qw/num_of_unit/;
+  my $seconds = num_of_unit('s');
+
   has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
   # possibly do transform here, in branches
@@ -36,10 +39,10 @@ class Physics::UEMColumn {
     required => 1,
   );
 
-  has 'start_time' => ( isa => 'Num', is => 'rw', default => 0 );
-  has 'end_time' => ( isa => 'Num', is => 'rw', lazy => 1, builder => '_est_init_end_time' );
+  has 'start_time' => ( isa => $seconds, is => 'rw', default => 0 );
+  has 'end_time' => ( isa => $seconds, is => 'rw', lazy => 1, builder => '_est_init_end_time' );
   has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
-  has 'step_width' => ( isa => 'Num', is => 'ro', lazy => 1, builder => '_set_step_width' );
+  has 'step_width' => ( isa => $seconds, is => 'ro', lazy => 1, builder => '_set_step_width' );
 
   #when estimating end times what additional error should be given. Set to 1 for no extra time.
   has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );

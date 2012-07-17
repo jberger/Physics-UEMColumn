@@ -5,11 +5,10 @@ class Physics::UEMColumn::Pulse {
 
   use MooseX::Types::NumUnit qw/num_of_unit/;
   use Physics::UEMColumn::Auxiliary ':constants';
+  use MooseX::Types::NumUnit qw/num_of_unit/;
 
   # user specified attributes
   has 'velocity' => ( isa => num_of_unit('m/s'), is => 'rw', required => 1 );
-#  has 'width'    => ( isa => 'Num', is => 'rw', required => 1 );
-#  has 'duration' => ( isa => 'Num', is => 'rw', required => 1 );
 
   has 'location' => ( isa => num_of_unit('m'), is => 'rw', default => 0 );
   has 'number'   => ( isa => 'Num', is => 'rw', default => 1 );
