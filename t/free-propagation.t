@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use List::MoreUtils qw/all/;
 
 #TODO remove after done writing
 END{ done_testing(); }
@@ -9,6 +10,7 @@ END{ done_testing(); }
 use Physics::UEMColumn;
 use Physics::UEMColumn::Auxiliary ':constants';
 
+# w_t = 100um, w_z = 50um, dE ~ Ta
 my $pulse = Physics::UEMColumn::Pulse->new(
   number => 1,
   velocity => '1e8 m/s',
@@ -38,10 +40,19 @@ my $result = $sim->propagate;
 ok( $result, 'Got a result from simulation' );
 is( ref $result, 'ARRAY', 'Result is an arrayref' );
 
-# $result->[i][0] is time
+# $result->[i][0] is time (t)
 is( $result->[0][0], 0, 'By default result starts at t=0' );
 
 # $result->[i][1] is position of electron (z)
 is( $result->[0][1], 0, 'Resulting pulse starts at z=0' );
 ok( $result->[-1][1] > $column->length, 'Resulting pulse position is beyond the end of the column' );
+
+my (@dw_t, @dw_z);
+for my $i ( 1 .. $#$result ) {
+  push @dw_t, ($result->[$i][3] - $result->[$i-1][3]);
+  push @dw_z, ($result->[$i][4] - $result->[$i-1][4]);
+}
+
+ok( (all { $_ >= 0 } @dw_t), 'Pulse always expands transversely' );
+ok( (all { $_ >= 0 } @dw_z), 'Pulse always expands longitudinally' );
 
