@@ -21,6 +21,10 @@ my $builder = Module::Build->new(
   configure_requires => {
     'Module::Build' => 0.38,
   },
+  recommends => {
+    'PDL' => 0,
+    'PDL::Graphics::Prima' => 0,
+  },
 );
 
 $builder->create_build_script;
