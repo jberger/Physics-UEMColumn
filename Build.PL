@@ -1,0 +1,26 @@
+use strict;
+use warnings;
+
+use Module::Build;
+
+my $builder = Module::Build->new(
+  module_name => 'Physics::UEMColumn',
+  dist_version => '0.000_001',
+  dist_abstract => 'UEM Simulation',
+  dist_author => 'Joel Berger',
+  requires => {
+    'MooseX::Declare' => 0,
+    'Method::Signatures::Modifiers' => 0,
+    'MooseX::Types::NumUnit' => 0,
+    'PerlGSL::DiffEq' => 0,
+  },
+  test_requires => {
+    'List::MoreUtils' => 0,
+    'Test::More' => 0,
+  },
+  configure_requires => {
+    'Module::Build' => 0.38,
+  },
+);
+
+$builder->create_build_script;
