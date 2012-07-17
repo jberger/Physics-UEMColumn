@@ -34,7 +34,6 @@ sub make_sim {
   my $sim = Physics::UEMColumn->new(
     column => $column,
     pulse => $pulse,
-    debug => 1,
     solver_opts => $solver_opts,
   );
 

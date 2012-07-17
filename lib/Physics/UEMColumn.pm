@@ -99,7 +99,8 @@ class Physics::UEMColumn {
 
     # continue to evaluate until pulse leaves column
     while ($self->pulse->location < $self->column->length) {
-      warn "Segment iteration number: " . $iter++ . "\n";
+      $iter++;
+      warn "Segment iteration number: " . $iter . "\n" if $self->debug;
 
       my $segment_result = $self->_evaluate_single_run();
       join_data( $result, $segment_result );
