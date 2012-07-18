@@ -25,6 +25,16 @@ my $builder = Module::Build->new(
     'PDL' => 0,
     'PDL::Graphics::Prima' => 0,
   },
+  meta_merge => {
+    resources  => {
+      repository => "http://github.com/jberger/Physics-UEMColumn",
+      bugtracker => "http://github.com/jberger/Physics-UEMColumn/issues",
+    },
+    no_index => {
+      #file      => [ 'README.pod' ],
+      directory => [ 'examples', 't' ],
+    },
+  },
 );
 
 $builder->create_build_script;
