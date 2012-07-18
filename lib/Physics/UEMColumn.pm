@@ -251,25 +251,32 @@ class Physics::UEMColumn {
     my $caller = caller;
     return unless $caller;
 
-    my %can_map =
-      map { $_->can('new') ? ( $_ => 'Physics::UEMColumn::' . $_ ) : () } 
+    # find all "classes" under Physics::UEMColumn and their short names
+    my %can_alias =
+      map { @$_ }
+      grep { $_->[1]->can('new') }
+      map { [ $_ => 'Physics::UEMColumn::' . $_ ] } 
       grep { s/::$// } 
       keys %Physics::UEMColumn::;
 
+    # these are the classes that will be exported unless :all or certain names are given
     my @default = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
 
-    my @to_map;
-    if( $_[0] eq ':all' ) {
-      @to_map = keys %can_map;
+    # examine @_ for requested aliases
+    my @to_alias;
+    if( @_ and $_[0] eq ':all' ) {
+      @to_alias = keys %can_alias;
     } elsif ( @_ ) {
-      @to_map = @_;
+      @to_alias = @_;
     } else {
-      @to_map = @default;
+      @to_alias = @default;
     }
 
-    for my $short ( @to_map ) {
-      my $full = $can_map{$short};
+    # do the aliasing
+    for my $short ( @to_alias ) {
+      my $full = $can_alias{$short};
       
+      # check that requested alias is known
       unless (defined $full) {
         carp "Unknown alias requested ($short)";
         next;
