@@ -30,7 +30,7 @@ my $column = Column->new(
   length       => '400 mm', 
   laser        => $laser,
   accelerator  => $acc,
-  photocathode => Physics::UEMColumn::Photocathode->new(Ta),
+  photocathode => Photocathode->new(Ta),
 );
 
 my $solver_opts = {

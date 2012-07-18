@@ -247,18 +247,35 @@ class Physics::UEMColumn {
 
   #hic sunt dracones
   sub import {
+    my $class = shift;
     my $caller = caller;
     return unless $caller;
 
-    my @mappings =
-      grep { $_->[0]->can('new') }
-      map { [ 'Physics::UEMColumn::' . $_, $_ ] } 
+    my %can_map =
+      map { $_->can('new') ? ( $_ => 'Physics::UEMColumn::' . $_ ) : () } 
       grep { s/::$// } 
       keys %Physics::UEMColumn::;
 
-    no strict 'refs';
-    for ( @mappings ) {
-      my ($full, $short) = @$_;
+    my @default = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
+
+    my @to_map;
+    if( $_[0] eq ':all' ) {
+      @to_map = keys %can_map;
+    } elsif ( @_ ) {
+      @to_map = @_;
+    } else {
+      @to_map = @default;
+    }
+
+    for my $short ( @to_map ) {
+      my $full = $can_map{$short};
+      
+      unless (defined $full) {
+        carp "Unknown alias requested ($short)";
+        next;
+      }
+
+      no strict 'refs';
       *{$caller . '::' . $short} = sub () { $full };
     }
   }
