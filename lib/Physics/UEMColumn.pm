@@ -253,9 +253,9 @@ class Physics::UEMColumn {
 
     # find all "classes" under Physics::UEMColumn and their short names
     my %can_alias =
-      map { @$_ }
+      map  { @$_ }
       grep { $_->[1]->can('new') }
-      map { [ $_ => 'Physics::UEMColumn::' . $_ ] } 
+      map  { [ $_ => 'Physics::UEMColumn::' . $_ ] } 
       grep { s/::$// } 
       keys %Physics::UEMColumn::;
 
