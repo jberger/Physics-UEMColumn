@@ -9,7 +9,7 @@ BEGIN {
   }
 }
 
-use Physics::UEMColumn;
+use Physics::UEMColumn alias => ':default';
 use Physics::UEMColumn::Auxiliary ':materials';
 
 use PDL;

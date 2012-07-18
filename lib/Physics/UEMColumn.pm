@@ -244,12 +244,21 @@ class Physics::UEMColumn {
 
   }
 
-
-  #hic sunt dracones
   sub import {
     my $class = shift;
     my $caller = caller;
-    return unless $caller;
+
+    my %opts = ref $_[0] ? %{ shift() } : @_;
+
+    if (exists $opts{alias} and $caller) {
+      $class->_setup_aliases( $caller, $opts{alias} );
+    }
+  }
+
+  #hic sunt dracones
+  sub _setup_aliases {
+    my $class = shift;
+    my ($caller, $alias) = @_;
 
     # find all "classes" under Physics::UEMColumn and their short names
     my %can_alias =
@@ -259,17 +268,18 @@ class Physics::UEMColumn {
       grep { s/::$// } 
       keys %Physics::UEMColumn::;
 
-    # these are the classes that will be exported unless :all or certain names are given
+    # these are the classes that will be exported in place of the :default tag
     my @default = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
 
-    # examine @_ for requested aliases
-    my @to_alias;
-    if( @_ and $_[0] eq ':all' ) {
+    # define requested aliases
+    my @to_alias = ref $alias ? @$alias : ( $alias );
+
+    if ( $to_alias[0] eq ':default' ) {
+      shift @to_alias;
+      unshift @to_alias, @default;
+
+    } elsif( $to_alias[0] eq ':all' ) {
       @to_alias = keys %can_alias;
-    } elsif ( @_ ) {
-      @to_alias = @_;
-    } else {
-      @to_alias = @default;
     }
 
     # do the aliasing
