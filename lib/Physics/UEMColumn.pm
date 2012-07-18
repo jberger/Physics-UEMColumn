@@ -244,5 +244,24 @@ class Physics::UEMColumn {
 
   }
 
+
+  #hic sunt dracones
+  sub import {
+    my $caller = caller;
+    return unless $caller;
+
+    my @mappings =
+      grep { $_->[0]->can('new') }
+      map { [ 'Physics::UEMColumn::' . $_, $_ ] } 
+      grep { s/::$// } 
+      keys %Physics::UEMColumn::;
+
+    no strict 'refs';
+    for ( @mappings ) {
+      my ($full, $short) = @$_;
+      *{$caller . '::' . $short} = sub () { $full };
+    }
+  }
+
 }
 

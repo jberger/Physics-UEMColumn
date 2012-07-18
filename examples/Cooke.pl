@@ -15,18 +15,18 @@ use Physics::UEMColumn::Auxiliary ':materials';
 use PDL;
 use PDL::Graphics::Prima::Simple [700,500];
 
-my $laser = Physics::UEMColumn::Laser->new(
+my $laser = Laser->new(
   width    => '1 mm',
   duration => '1 ps',
   energy   => '4.75 eV',
 );
 
-my $acc = Physics::UEMColumn::DCAccelerator->new(
+my $acc = DCAccelerator->new(
   length  => '20 mm',
   voltage => '20 kilovolts',
 );
 
-my $column = Physics::UEMColumn::Column->new(
+my $column = Column->new(
   length       => '400 mm', 
   laser        => $laser,
   accelerator  => $acc,
@@ -49,12 +49,12 @@ my $l_mag_lens = '1 in';
 my $cooke_sep  = 5; #cm
 my $str_mag    = 33e-13;
 
-my $lens1 = Physics::UEMColumn::MagneticLens->new(
+my $lens1 = MagneticLens->new(
   location => ($z_rf - $cooke_sep) . 'cm',
   length   => $l_mag_lens,
   strength => $str_mag,
 );
-my $lens2 = Physics::UEMColumn::MagneticLens->new(
+my $lens2 = MagneticLens->new(
   location => ($z_rf + $cooke_sep) . 'cm',
   length   => $l_mag_lens,
   strength => $str_mag,
@@ -62,7 +62,7 @@ my $lens2 = Physics::UEMColumn::MagneticLens->new(
 $sim->column->add_element($lens1);
 $sim->column->add_element($lens2);
 
-my $rf_cav = Physics::UEMColumn::RFCavity->new(
+my $rf_cav = RFCavity->new(
   location  => $z_rf . 'cm',
   length    => '2 cm',
   strength  => '230 kilovolts / m',
