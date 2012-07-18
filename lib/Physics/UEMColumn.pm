@@ -97,7 +97,7 @@ class Physics::UEMColumn {
 
   method propagate () {
 
-    my $iter = 1;
+    my $iter = 0;
     my $result = [];
 
     # continue to evaluate until pulse leaves column
