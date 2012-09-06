@@ -1,7 +1,9 @@
-use MooseX::Declare;
-use Method::Signatures::Modifiers;
+package Physics::UEMColumn::Element;
 
-class Physics::UEMColumn::Element {
+  use Moose;
+  use namespace::autoclean;
+
+  use Method::Signatures;
 
   use MooseX::Types::NumUnit qw/num_of_unit/;
   my $meters = num_of_unit('m');
@@ -16,19 +18,31 @@ class Physics::UEMColumn::Element {
     return {};
   }
 
-}
+  __PACKAGE__->meta->make_immutable;
 
-class Physics::UEMColumn::Accelerator
-  extends Physics::UEMColumn::Element {
+package Physics::UEMColumn::Accelerator;
+
+  use Moose;
+  use namespace::autoclean;
+
+  use Method::Signatures;
+
+  extends 'Physics::UEMColumn::Element';
 
   method field () {
     return 0;
   }
 
-}
+  __PACKAGE__->meta->make_immutable;
 
-class Physics::UEMColumn::DCAccelerator
-  extends Physics::UEMColumn::Accelerator {
+package Physics::UEMColumn::DCAccelerator;
+
+  use Moose;
+  use namespace::autoclean;
+
+  use Method::Signatures::Modifiers;
+
+  extends 'Physics::UEMColumn::Accelerator';
 
   use Physics::UEMColumn::Auxiliary ':constants';
   use Math::Trig qw/tanh sech/;
@@ -96,10 +110,16 @@ class Physics::UEMColumn::DCAccelerator
     return $self->length() * sqrt( 2 * me / ( qe * $self->voltage ) );
   }
 
-}
+  __PACKAGE__->meta->make_immutable;
 
-class Physics::UEMColumn::MagneticLens 
-  extends Physics::UEMColumn::Element {
+package Physics::UEMColumn::MagneticLens;
+
+  use Moose;
+  use namespace::autoclean;
+
+  use Method::Signatures::Modifiers;
+
+  extends 'Physics::UEMColumn::Element';
 
   has 'strength' => ( isa => 'Num', is => 'rw', required => 0);
   has 'order' =>    ( isa => 'Int', is => 'ro', default => 1);
@@ -129,10 +149,16 @@ class Physics::UEMColumn::MagneticLens
 
   }
 
-}
+  __PACKAGE__->meta->make_immutable;
 
-class Physics::UEMColumn::RFCavity
-  extends Physics::UEMColumn::Element {
+package Physics::UEMColumn::RFCavity;
+
+  use Moose;
+  use namespace::autoclean;
+
+  use Method::Signatures::Modifiers;
+
+  extends 'Physics::UEMColumn::Element';
 
   use Physics::UEMColumn::Auxiliary ':constants';
   use MooseX::Types::NumUnit qw/num_of_unit/;
@@ -213,5 +239,8 @@ class Physics::UEMColumn::RFCavity
 
   }
 
-}
+  __PACKAGE__->meta->make_immutable;
+
+1;
+
 
