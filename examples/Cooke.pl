@@ -59,8 +59,8 @@ my $lens2 = MagneticLens->new(
   length   => $l_mag_lens,
   strength => $str_mag,
 );
-$sim->column->add_element($lens1);
-$sim->column->add_element($lens2);
+$sim->add_element($lens1);
+$sim->add_element($lens2);
 
 my $rf_cav = RFCavity->new(
   location  => $z_rf . 'cm',
@@ -68,7 +68,7 @@ my $rf_cav = RFCavity->new(
   strength  => '230 kilovolts / m',
   frequency => '3 gigahertz',
 );
-$sim->column->add_element($rf_cav);
+$sim->add_element($rf_cav);
 
 my $result = pdl( $sim->propagate );
 

@@ -37,6 +37,7 @@ class Physics::UEMColumn {
     isa => 'Physics::UEMColumn::Column', 
     is => 'ro', 
     required => 1,
+    handles => [ qw/ add_element / ],
   );
 
   has 'start_time' => ( isa => $seconds, is => 'rw', default => 0 );
