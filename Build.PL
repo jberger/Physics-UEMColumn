@@ -9,8 +9,9 @@ my $builder = Module::Build->new(
   dist_abstract => 'UEM Simulation',
   dist_author => 'Joel Berger',
   requires => {
-    'MooseX::Declare' => 0,
-    'Method::Signatures::Modifiers' => 0,
+    'Moose' => 0,
+    'namespace::autoclean' => 0,
+    'Method::Signatures' => 0,
     'MooseX::Types::NumUnit' => 0,
     'PerlGSL::DiffEq' => 0,
   },
