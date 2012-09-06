@@ -40,7 +40,7 @@ package Physics::UEMColumn::DCAccelerator;
   use Moose;
   use namespace::autoclean;
 
-  use Method::Signatures::Modifiers;
+  use Method::Signatures;
 
   extends 'Physics::UEMColumn::Accelerator';
 
@@ -52,11 +52,11 @@ package Physics::UEMColumn::DCAccelerator;
   has 'voltage' => ( isa => num_of_unit('V'), is => 'ro', required => 1 );
   has 'sharpness' => ( isa => 'Num', is => 'ro', default => 10 );
 
-  override field () {
+  method field () {
     $self->voltage / $self->length;
   }
 
-  override effect () {
+  method effect () {
     my $anode_pos = $self->length;
     my $acc_voltage = $self->voltage;
     my $force = qe * $acc_voltage / $anode_pos;
@@ -117,14 +117,14 @@ package Physics::UEMColumn::MagneticLens;
   use Moose;
   use namespace::autoclean;
 
-  use Method::Signatures::Modifiers;
+  use Method::Signatures;
 
   extends 'Physics::UEMColumn::Element';
 
   has 'strength' => ( isa => 'Num', is => 'rw', required => 0);
   has 'order' =>    ( isa => 'Int', is => 'ro', default => 1);
 
-  override effect () {
+  method effect () {
 
     my $lens_z = $self->location;
     my $lens_length = $self->length;
@@ -156,7 +156,7 @@ package Physics::UEMColumn::RFCavity;
   use Moose;
   use namespace::autoclean;
 
-  use Method::Signatures::Modifiers;
+  use Method::Signatures;
 
   extends 'Physics::UEMColumn::Element';
 
@@ -170,7 +170,7 @@ package Physics::UEMColumn::RFCavity;
   has 'phase'     => (isa => 'Num', is => 'ro', default => 0);
   has 'order'     => (isa => 'Int', is => 'ro', default => 2);
 
-  override effect () {
+  method effect () {
 
     my $lens_z = $self->location;
     my $length = $self->length;
