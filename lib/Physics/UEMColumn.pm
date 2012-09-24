@@ -143,7 +143,7 @@ has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely 
 
 =item C<step_width>
 
-The estimated duration of steps. This number is usually determined from the above parameters. This helps to create a uniform data spacing, even if multiple runs are needed to span the entire column. Units: seconds.
+The estimated duration of steps. This number is usually determined from the above parameters. This helps to create a uniform data spacing, even if multiple runs are needed to span the entire column. Unit: seconds.
 
 =cut
 
@@ -151,7 +151,7 @@ has 'step_width' => ( isa => $seconds, is => 'ro', lazy => 1, builder => '_set_s
 
 =item C<time_error>
 
-A multiplicative factor used when estimating the simulation ending time. The default is C<1.1> or C<10%> additional time. Set to C<1> for no extra time.
+A multiplicative factor used when estimating the simulation ending time. The default is C<1.1> or 10% additional time. Set to C<1> for no extra time.
 
 =cut
 
