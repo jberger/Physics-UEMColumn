@@ -53,19 +53,27 @@ has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
 has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
 #has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
 
-# check for proper combinations of inputs
+
 method BUILD ($param) {
+
+  # check for proper combinations of inputs
   unless ( $self->has_pulse or $self->column->can_make_pulse ) {
     die "You must either provide a pulse object to the simulation object or else include laser, accelerator and photocathode objects to the column";
   }
 
   if ( $self->has_pulse and $self->has_number ) {
-    carp "'number' attr is superfluous when a pulse object is provided";
+    carp "'number' attribute is superfluous (and ignored) when a pulse object is provided";
   }
 
   unless ( $self->has_pulse or $self->has_number ) {
     die "You must provide either a pulse object or a number of electrons to create";
   }
+
+  # initialize some solver options, if not specified
+  my $solver_opts = $self->solver_opts;
+  
+  $solver_opts->{h_max}  = exists $solver_opts->{h_max}  ? $solver_opts->{h_max}  : 5e-12;
+  $solver_opts->{h_init} = exists $solver_opts->{h_init} ? $solver_opts->{h_init} : 5e-13;
 }
 
 method _generate_pulse () {
@@ -304,7 +312,7 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
-__POD__
+__END__
 
 =head1 NAME
 
