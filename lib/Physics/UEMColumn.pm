@@ -304,3 +304,28 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+__POD__
+
+=head1 NAME
+
+Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for Ultrafast Electron Pulse Propagation
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Physics-UEMColumn>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
