@@ -320,7 +320,46 @@ Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for U
 
 =head1 SYNOPSIS
 
+  use strict;
+  use warnings;
+
+  use Physics::UEMColumn alias => ':default';
+  use Physics::UEMColumn::Auxiliary ':constants';
+
+  my $pulse = Pulse->new(
+    number   => 1e8,
+    velocity => '1e8 m/s',
+    sigma_t  => 100 ** 2 / 2 . 'um^2',
+    sigma_z  => 50 ** 2 / 2 . 'um^2',
+    eta_t    => me * 5.3 / 3 * 0.5 / 10 . 'kg eV',
+  );
+
+  my $column = Column->new(
+    length => '100 cm',
+  );
+
+  my $sim = Physics::UEMColumn->new(
+    column => $column,
+    pulse  => $pulse,
+  );
+
+  my $result = $sim->propagate;
+
 =head1 DESCRIPTION
+
+L<Physics::UEMColumn> is an implementation of the Analytic Gaussian (AG) electron pulse propagation model, presented by Michalik and Sipe (L<http://dx.doi.org/10.1063/1.2178855>) and extended by Berger and Schroeder (L<http://dx.doi.org/10.1063/1.3512847>). 
+
+=head2 About the Model
+
+This extended model calculates the dynamics of electron pulse propagation for an ultrashort pulse of electrons (that is electron packets of short enough temporal length to be completely contained inside the acceleration region). These electrons are then subject to the internal repulsive Coulomb forces, as well as the external forces of acceleration regions, magnetic lenses and radio-frequency (RF) cavities. 
+
+=head2 Caveats
+
+The model is a self-similar Gaussian model, and therefore a mean-field model; futher the modeling of external forces is restricted to perfect lensing. Also, the equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
+
+=head2 Examples
+
+Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathod and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
 
 =head1 SOURCE REPOSITORY
 
