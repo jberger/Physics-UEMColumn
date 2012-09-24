@@ -227,7 +227,7 @@ method _est_init_end_time () {
 
 =item C<propagate>
 
-This method call begins the main simulation.
+This method call begins the main simulation. It returns the result of this evaluation. Should a single pulse be propagated more than once the return will not include the results of the previous runs; the full propagation history will be available via the pulse's C<data> attribute.
 
 =back
 
@@ -236,7 +236,7 @@ This method call begins the main simulation.
 method propagate () {
 
   my $iter = 0;
-  my $result = [];
+  my $result = $self->result;
 
   # continue to evaluate until pulse leaves column
   while ($self->pulse->location < $self->column->length) {
@@ -381,6 +381,18 @@ method _make_diffeqs () {
   return $eqns;
 
 }
+
+=head1 IMPORTING
+
+=head1 Class Aliases
+
+Since this is an object oriented simulation, many classes available to be created. To prevent carpal tunnel syndrom, these classes may be aliased in the current package (via stub functions) to remove the leading namespace C<Physics::UEMColumn::>. To create these aliases, use the import directive C<alias>
+
+ use Physics::UEMColumn alias => ':standard';
+
+The value of the alias directive can be an arrayref of strings of the names of the classes to be aliased, or else the special strings C<:all> (attempts to alias all classes) or C<:standard> (aliases the classes C<Laser Column Photocathode MagneticLens DCAccelerator RFCavity>).
+
+=cut
 
 sub import {
   my $class = shift;
