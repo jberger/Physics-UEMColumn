@@ -1,5 +1,54 @@
 package Physics::UEMColumn;
 
+=head1 NAME
+
+Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for Ultrafast Electron Pulse Propagation
+
+=head1 SYNOPSIS
+
+  use strict;
+  use warnings;
+
+  use Physics::UEMColumn alias => ':standard';
+  use Physics::UEMColumn::Auxiliary ':constants';
+
+  my $pulse = Pulse->new(
+    number   => 1e8,
+    velocity => '1e8 m/s',
+    sigma_t  => 100 ** 2 / 2 . 'um^2',
+    sigma_z  => 50 ** 2 / 2 . 'um^2',
+    eta_t    => me * 5.3 / 3 * 0.5 / 10 . 'kg eV',
+  );
+
+  my $column = Column->new(
+    length => '100 cm',
+  );
+
+  my $sim = Physics::UEMColumn->new(
+    column => $column,
+    pulse  => $pulse,
+  );
+
+  my $result = $sim->propagate;
+
+=head1 DESCRIPTION
+
+L<Physics::UEMColumn> is an implementation of the Analytic Gaussian (AG) electron pulse propagation model, presented by Michalik and Sipe (L<http://dx.doi.org/10.1063/1.2178855>) and extended by Berger and Schroeder (L<http://dx.doi.org/10.1063/1.3512847>). 
+
+=head2 About the Model
+
+This extended model calculates the dynamics of electron pulse propagation for an ultrashort pulse of electrons (that is electron packets of short enough temporal length to be completely contained inside the acceleration region). These electrons are then subject to the internal repulsive Coulomb forces, as well as the external forces of acceleration regions, magnetic lenses and radio-frequency (RF) cavities. 
+
+=head2 Caveats
+
+The model is a self-similar Gaussian model, and therefore a mean-field model; futher the modeling of external forces is restricted to perfect lensing. Also, the equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
+
+=head2 Examples
+
+Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathod and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
+
+=cut
+
 use Moose;
 use namespace::autoclean;
 
@@ -21,11 +70,31 @@ use Physics::UEMColumn::Auxiliary ':all';
 use MooseX::Types::NumUnit qw/num_of_unit/;
 my $seconds = num_of_unit('s');
 
+=head1 ATTRIBUTES
+
+=over 
+
+=item C<debug>
+
+A testing parameter which might give additional output. At this early release stage, no specific output is guaranteed.
+
+=cut
+
 has 'debug' => ( isa => 'Num', is => 'ro', default => 0);
 
-# possibly do transform here, in branches
+=item C<number>
+
+The number of electrons to be generated. If no C<Pulse> object is available, this value is used for pulse generation.
+
+=cut
 
 has 'number' => ( isa => 'Num', is => 'rw', predicate => 'has_number');
+
+=item C<pulse>
+
+Holder for a L<Physics::UEMColumn::Pulse> object. If one is not given, an attempt will be made to generate one, if enough other information has been given. If generation of such an object is not possible an error message will be shown. Such an object must be present to simulate a column.
+
+=cut
 
 has 'pulse' => (
   isa => 'Physics::UEMColumn::Pulse',
@@ -35,6 +104,12 @@ has 'pulse' => (
   predicate => 'has_pulse',
 );
 
+=item C<column>
+
+Holder for a L<Physics::UEMColumn::Column> object. This object acts as a holder for other column elements and defines the total column length. This object is required.
+
+=cut
+
 has 'column' => ( 
   isa => 'Physics::UEMColumn::Column', 
   is => 'ro', 
@@ -42,17 +117,57 @@ has 'column' => (
   handles => [ qw/ add_element / ],
 );
 
+=item C<start_time>
+
+Initial time for the simulation, this is C<0> by default. Unit: seconds.
+
+=cut
+
 has 'start_time' => ( isa => $seconds, is => 'rw', default => 0 );
+
+=item C<end_time>
+
+The estimated time at which the simulation will be ended. In actuality the full simulation will end when the pulse has reached the end of the column. For performance reasons it is advantageous for this time to be long enough to reach the end of the simulation. If no value is given for this attribute, one will be estimated from known parameters. Unit: seconds.
+
+=cut
+
 has 'end_time' => ( isa => $seconds, is => 'rw', lazy => 1, builder => '_est_init_end_time' );
+
+=item C<steps>
+
+The requested number of time-step data points returned. This is neither the total number evaluations performed nor guaranteed to be the number of actual data points returned. This is more of a shorthand for specifying a step-width when the total duration is unknown. The default is C<100>. This number must be an integer.
+
+=cut
+
 has 'steps' => (isa => 'Int', is => 'rw', default => 100); # this is not likely to be the number of output steps
+
+=item C<step_width>
+
+The estimated duration of steps. This number is usually determined from the above parameters. This helps to create a uniform data spacing, even if multiple runs are needed to span the entire column. Units: seconds.
+
+=cut
+
 has 'step_width' => ( isa => $seconds, is => 'ro', lazy => 1, builder => '_set_step_width' );
 
-#when estimating end times what additional error should be given. Set to 1 for no extra time.
-has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
-#opts hashref passed directly to ode_solver
-has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
-#has 'need_jacobian' => ( isa => 'Bool', is => 'ro', default => 0 );
+=item C<time_error>
 
+A multiplicative factor used when estimating the simulation ending time. The default is C<1.1> or C<10%> additional time. Set to C<1> for no extra time.
+
+=cut
+
+has 'time_error' => ( isa => 'Num', is => 'ro', default => 1.1 );
+
+=item C<solver_opts>
+
+The options hashref passed directly to the C<ode_solver> from L<PerlGSL::DiffEq>. Unless explicitly changed, the options C<< h_max => 5e-12 >> and C<< h_init => 5e-13 >> are used.
+
+=cut
+
+has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
+
+=back
+
+=cut
 
 method BUILD ($param) {
 
@@ -311,55 +426,6 @@ sub _setup_aliases {
 __PACKAGE__->meta->make_immutable;
 
 1;
-
-__END__
-
-=head1 NAME
-
-Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for Ultrafast Electron Pulse Propagation
-
-=head1 SYNOPSIS
-
-  use strict;
-  use warnings;
-
-  use Physics::UEMColumn alias => ':standard';
-  use Physics::UEMColumn::Auxiliary ':constants';
-
-  my $pulse = Pulse->new(
-    number   => 1e8,
-    velocity => '1e8 m/s',
-    sigma_t  => 100 ** 2 / 2 . 'um^2',
-    sigma_z  => 50 ** 2 / 2 . 'um^2',
-    eta_t    => me * 5.3 / 3 * 0.5 / 10 . 'kg eV',
-  );
-
-  my $column = Column->new(
-    length => '100 cm',
-  );
-
-  my $sim = Physics::UEMColumn->new(
-    column => $column,
-    pulse  => $pulse,
-  );
-
-  my $result = $sim->propagate;
-
-=head1 DESCRIPTION
-
-L<Physics::UEMColumn> is an implementation of the Analytic Gaussian (AG) electron pulse propagation model, presented by Michalik and Sipe (L<http://dx.doi.org/10.1063/1.2178855>) and extended by Berger and Schroeder (L<http://dx.doi.org/10.1063/1.3512847>). 
-
-=head2 About the Model
-
-This extended model calculates the dynamics of electron pulse propagation for an ultrashort pulse of electrons (that is electron packets of short enough temporal length to be completely contained inside the acceleration region). These electrons are then subject to the internal repulsive Coulomb forces, as well as the external forces of acceleration regions, magnetic lenses and radio-frequency (RF) cavities. 
-
-=head2 Caveats
-
-The model is a self-similar Gaussian model, and therefore a mean-field model; futher the modeling of external forces is restricted to perfect lensing. Also, the equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
-
-=head2 Examples
-
-Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathod and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
 
 =head1 SOURCE REPOSITORY
 
