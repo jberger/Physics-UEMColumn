@@ -27,14 +27,9 @@ sub make_sim {
   );
   isa_ok($column, 'Physics::UEMColumn::Column');
 
-  my $solver_opts = {
-    h_max => 5e-12,
-    h_init => 1e-12 / 2,
-  };
   my $sim = Physics::UEMColumn->new(
     column => $column,
     pulse => $pulse,
-    solver_opts => $solver_opts,
   );
 
   my $result = $sim->propagate;

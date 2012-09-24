@@ -33,15 +33,10 @@ my $column = Column->new(
   photocathode => Photocathode->new(Ta),
 );
 
-my $solver_opts = {
-  h_max  => 5e-12,
-  h_init => 1e-12 / 2,
-};
 my $sim = Physics::UEMColumn->new(
   column      => $column,
   number      => 1,
   debug       => 1,
-  solver_opts => $solver_opts,
 );
 
 my $z_rf       = 20; #cm
