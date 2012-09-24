@@ -20,16 +20,16 @@ use Test::More tests => 19;
 }
 
 {
-  package Local::Test::Default;
-  use Physics::UEMColumn alias => ':default';
+  package Local::Test::Standard;
+  use Physics::UEMColumn alias => ':standard';
 
   for my $alias ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / ) {
-    my $func = Local::Test::Default->can($alias);
+    my $func = Local::Test::Standard->can($alias);
     Test::More::ok( $func, "Alias is imported ($alias)" );
     Test::More::is( $func->(), "Physics::UEMColumn::$alias", "Alias has correct target" );
   }
 
-  Test::More::ok( ! Local::Test::Default->can('Element'), 'non-default aliases are not imported' );
+  Test::More::ok( ! Local::Test::Standard->can('Element'), 'non-standard aliases are not imported' );
 }
 
 {

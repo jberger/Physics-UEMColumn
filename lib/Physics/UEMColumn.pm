@@ -279,15 +279,15 @@ sub _setup_aliases {
     grep { s/::$// } 
     keys %Physics::UEMColumn::;
 
-  # these are the classes that will be exported in place of the :default tag
-  my @default = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
+  # these are the classes that will be exported in place of the :standard tag
+  my @standard = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
 
   # define requested aliases
   my @to_alias = ref $alias ? @$alias : ( $alias );
 
-  if ( $to_alias[0] eq ':default' ) {
+  if ( $to_alias[0] eq ':standard' ) {
     shift @to_alias;
-    unshift @to_alias, @default;
+    unshift @to_alias, @standard;
 
   } elsif( $to_alias[0] eq ':all' ) {
     @to_alias = keys %can_alias;
@@ -323,7 +323,7 @@ Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for U
   use strict;
   use warnings;
 
-  use Physics::UEMColumn alias => ':default';
+  use Physics::UEMColumn alias => ':standard';
   use Physics::UEMColumn::Auxiliary ':constants';
 
   my $pulse = Pulse->new(
