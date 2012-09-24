@@ -221,6 +221,18 @@ method _est_init_end_time () {
   return $tf;
 }
 
+=head1 METHODS
+
+=over
+
+=item C<propagate>
+
+This method call begins the main simulation.
+
+=back
+
+=cut
+
 method propagate () {
 
   my $iter = 0;
