@@ -40,6 +40,8 @@ method generate_pulse ( Num $num ) {
   die 'Photocathode requires access to column object' unless $self->has_column;
   my $column = $self->column;
 
+  die 'Not enough information to create pulse' unless $column->can_make_pulse;
+
   my $laser = $column->laser;
   my $acc = $column->accelerator;
 
