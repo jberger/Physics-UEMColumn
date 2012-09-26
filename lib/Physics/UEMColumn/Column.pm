@@ -99,13 +99,6 @@ The length of the column. This value is required. This value defines then end of
 
 has 'length' => ( isa => num_of_unit('m'), is => 'rw', required => 1 );
 
-#method BUILD (Item $params) {
-#  if ($self->has_accelerator && $self->has_photocathode) {
-#    $self->add_element( $self->accelerator );
-#    $self->photocathode->column( $self );
-#  }
-#} 
-
 =back
 
 =head1 METHODS
