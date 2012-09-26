@@ -1,5 +1,8 @@
 package Physics::UEMColumn;
 
+our $VERSION = "0.900_001";
+$VERSION = eval $VERSION;
+
 =head1 NAME
 
 Physics::UEMColumn - An Implementation of the Analytic Gaussian (AG) Model for Ultrafast Electron Pulse Propagation

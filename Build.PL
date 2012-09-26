@@ -5,8 +5,6 @@ use Module::Build;
 
 my $builder = Module::Build->new(
   module_name => 'Physics::UEMColumn',
-  dist_version => '0.000_001',
-  dist_abstract => 'UEM Simulation',
   dist_author => 'Joel Berger',
   requires => {
     'Moose' => 0,
