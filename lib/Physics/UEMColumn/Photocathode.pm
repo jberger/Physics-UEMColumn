@@ -1,5 +1,25 @@
 package Physics::UEMColumn::Photocathode;
 
+package Physics::UEMColumn::Pulse;
+
+=head1 NAME
+
+Physics::UEMColumn::Pulse - Class representing a pulse for the Physics::UEMColumn simulation
+
+=head1 SYNOPSIS
+
+  use strict;
+  use warnings;
+
+  use Physics::UEMColumn alias => ':standard';
+
+  my $photocathode = Photocathode->new(
+    energy_fermi => '5.3 eV',
+    work_function => '4.25 eV',
+  );
+
+=cut
+
 use Moose;
 use namespace::autoclean;
 
