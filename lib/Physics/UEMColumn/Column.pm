@@ -48,19 +48,19 @@ has accelerator => (
   isa => 'Physics::UEMColumn::Accelerator', 
   is => 'ro', 
   predicate => 'has_accelerator',
-#  trigger => \&_trigger_accelerator,
+  trigger => \&_trigger_accelerator,
 );
 
-#method _trigger_accelerator ($acc, $old_acc?) {
-#  my $elements = $self->elements;
+method _trigger_accelerator ($acc, $old_acc?) {
+  my $elements = $self->elements;
 
-#  if (eval{ $elements->[0]->isa('Physics::UEMColumn::Accelerator') }) {
-#    shift @$elements;
-#  }
+  if (eval{ $elements->[0]->isa('Physics::UEMColumn::Accelerator') }) {
+    shift @$elements;
+  }
 
-#  unshift @$elements, $acc;
+  unshift @$elements, $acc;
   
-#}
+}
 
 =item C<photocathode>
 
@@ -72,7 +72,7 @@ has photocathode => (
   isa => 'Physics::UEMColumn::Photocathode', 
   is => 'ro', 
   predicate => 'has_photocathode',
-#  trigger => sub { $_[1]->column( $_[0] ) },
+  trigger => sub { $_[1]->column( $_[0] ) },
 );
 
 =item C<elements>
@@ -99,12 +99,12 @@ The length of the column. This value is required. This value defines then end of
 
 has 'length' => ( isa => num_of_unit('m'), is => 'rw', required => 1 );
 
-method BUILD (Item $params) {
-  if ($self->has_accelerator && $self->has_photocathode) {
-    $self->add_element( $self->accelerator );
-    $self->photocathode->column( $self );
-  }
-} 
+#method BUILD (Item $params) {
+#  if ($self->has_accelerator && $self->has_photocathode) {
+#    $self->add_element( $self->accelerator );
+#    $self->photocathode->column( $self );
+#  }
+#} 
 
 =back
 
