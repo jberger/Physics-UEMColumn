@@ -1,10 +1,8 @@
 package Physics::UEMColumn::Photocathode;
 
-package Physics::UEMColumn::Pulse;
-
 =head1 NAME
 
-Physics::UEMColumn::Pulse - Class representing a pulse for the Physics::UEMColumn simulation
+Physics::UEMColumn::Photocathode - Class representing a photocathode for the Physics::UEMColumn simulation
 
 =head1 SYNOPSIS
 
