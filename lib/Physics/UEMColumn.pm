@@ -70,7 +70,13 @@ use Physics::UEMColumn::Auxiliary ':all';
 use MooseX::Types::NumUnit qw/num_of_unit/;
 my $seconds = num_of_unit('s');
 
-=head1 ATTRIBUTES
+=head1 THE C<Physics::UEMColumn> CLASS
+
+Instances of the L<Physics::UEMColumn> class may be thought of as the "simulation" objects. The state of a simulation and all its constituent objects are stored in an instance of this class. It does not rely on any internal global state and thus several objects may be used simultaneously.
+
+=head2 Attributes
+
+L<Physics::UEMColumn> objects have certain properties which may be set during instantiation when passed as key value pairs to the C<new> method or may be accessed and possible changed via accessor methods of the same name. These attributes are as follows.
 
 =over 
 
@@ -221,9 +227,16 @@ method _est_init_end_time () {
   return $tf;
 }
 
-=head1 METHODS
+=head2 Methods
 
 =over
+
+=item C<add_element>
+
+A pass-through convenience method which adds a given L<Physics::UEMColumn::Element> instance to the column. Therefore these two calls are exactly equivalent.
+
+ $sim->column->add_element($elem);
+ $sim->add_element($elem);
 
 =item C<propagate>
 
