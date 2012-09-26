@@ -44,7 +44,23 @@ Holder for an optional L<Physics::UEMColumn::Accelerator> object. Predicate: C<h
 
 =cut
 
-has accelerator => ( isa => 'Physics::UEMColumn::Accelerator', is => 'ro', predicate => 'has_accelerator' );
+has accelerator => ( 
+  isa => 'Physics::UEMColumn::Accelerator', 
+  is => 'ro', 
+  predicate => 'has_accelerator',
+#  trigger => \&_trigger_accelerator,
+);
+
+#method _trigger_accelerator ($acc, $old_acc?) {
+#  my $elements = $self->elements;
+
+#  if (eval{ $elements->[0]->isa('Physics::UEMColumn::Accelerator') }) {
+#    shift @$elements;
+#  }
+
+#  unshift @$elements, $acc;
+  
+#}
 
 =item C<photocathode>
 
@@ -52,7 +68,12 @@ Holder for an optional L<Physics::UEMColumn::Photocathode> object. Predicate: C<
 
 =cut
 
-has photocathode => ( isa => 'Physics::UEMColumn::Photocathode', is => 'ro', predicate => 'has_photocathode' );
+has photocathode => ( 
+  isa => 'Physics::UEMColumn::Photocathode', 
+  is => 'ro', 
+  predicate => 'has_photocathode',
+#  trigger => sub { $_[1]->column( $_[0] ) },
+);
 
 =item C<elements>
 
