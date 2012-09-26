@@ -252,7 +252,7 @@ This method call begins the main simulation. It returns the result of this evalu
 method propagate () {
 
   my $iter = 0;
-  my $result = $self->result;
+  my $result = [];
 
   # continue to evaluate until pulse leaves column
   while ($self->pulse->location < $self->column->length) {
