@@ -16,6 +16,10 @@ Physics::UEMColumn::Photocathode - Class representing a photocathode for the Phy
     work_function => '4.25 eV',
   );
 
+  # note that $photocathode must have some access to an appropriate Column object
+
+  my $pulse = $photocathode->generate_pulse( 1e8 );
+
 =cut
 
 use Moose;
@@ -29,10 +33,53 @@ use Physics::UEMColumn::Auxiliary qw/:constants/;
 
 my $type_energy = num_of_unit( 'J' );
 
+=head1 ATTRIBUTES
+
+=over
+
+=item C<energy_fermi>
+
+The Fermi energy of the material. Required. Unit: J
+
+=cut
+
 has 'energy_fermi' => ( isa => $type_energy, is => 'ro', required => 1 ); 
+
+=item C<work_function>
+
+The "work function" of the material. Rquired. Unit: J
+
+=cut
+
 has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
+
+=item C<location>
+
+The location of the Photocathode in the Column. This value will be used as the location of the generated Pulse object. The default is C<0>.
+
+=cut
+
 has 'location' => ( isa => num_of_unit('m'), is => 'ro', default => 0 );
+
+=item C<column>
+
+Holder for a reference to the containing Column object. This should not be set manually, but will be done by adding the Photocathode object to the Column via its C<photocathode> attribute (either at creation or setter method).
+
+=cut
+
 has 'column' => ( isa => 'Physics::UEMColumn::Column', is => 'rw', predicate => 'has_column' );
+
+=back
+
+=head1 METHODS
+
+=over
+
+=item C<generate_pulse>
+
+Takes a number which represents the number of electrons to be put in the pulse. This method uses the available information (some of it from the C<column> attribute) to generate a pulse in the manner of a flat metal photocathode. The behavior of this method is likely to change as the flat metal photocathode really ought to be a subclass of some more generic class.
+
+=cut
 
 method generate_pulse ( Num $num ) {
   die 'Photocathode requires access to column object' unless $self->has_column;
@@ -71,7 +118,26 @@ method generate_pulse ( Num $num ) {
   return $pulse;
 }
 
+=back
+
+=cut
+
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Physics-UEMColumn>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
