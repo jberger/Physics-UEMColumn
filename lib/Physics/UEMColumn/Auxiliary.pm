@@ -3,6 +3,24 @@ package Physics::UEMColumn::Auxiliary;
 use strict;
 use warnings;
 
+=head1 NAME
+
+Physics::UEMColumn::Auxiliary;
+
+=head1 SYNOPSIS
+
+ use Physics::UEMColumn::Auxiliary ':all';
+
+=head1 DESCRIPTION
+
+This module collects all the extra functionality that had no place else to be. In future versions this module may be separated into several modules, though an attempt will be made to preserve backwards compatibility.
+
+=head1 IMPORTING
+
+L<Physics::UEMColumn::Auxiliary> doesn't export anything by default and while any symbol shown below may be requested explicitly, as exporting is its primary purpose, some thought has been put into tagging collections of symbols for importing into scripts. Those tags are:
+
+=cut
+
 use Math::Trig;
 
 use parent 'Exporter';
@@ -18,7 +36,33 @@ push @EXPORT_OK, @$_ for values %EXPORT_TAGS;
 
 $EXPORT_TAGS{'all'} = \@EXPORT_OK;
 
-## Tag: constants ## 
+=head2 :constants
+
+=over
+
+=item pi
+
+The mathematical constant
+
+=item me
+
+The rest mass of an electron (kg)
+
+=item qe
+
+The charge of an electron (C)
+
+=item epsilon_0
+
+The permittivity of free space (electric constant) (F/m)
+
+=item vc
+
+The speed of light in a vacuum (m/s)
+
+=back
+
+=cut
 
 use constant {
   me => 9.1e-31,
@@ -27,7 +71,19 @@ use constant {
   vc => 2.9979e8,
 };
 
-## Tag: materials ##
+=head2 :materials
+
+Null prototyped functions returning a hash of C<energy_fermi> and C<work_function> suitable for passing to the constructor of a C<Physics::UEMColumn::Photocathode> object.
+
+=over
+
+=item Ta
+
+Tantalum metal
+
+=back
+
+=cut
 
 sub Ta() {
   return (
@@ -36,7 +92,11 @@ sub Ta() {
   );
 }
 
-## Tag: model_funcs ##
+=head2 :model_funcs
+
+Internal functions related to implementing the AG model (see M&S original paper). These need not be used by the end-user and thus are not described here.
+
+=cut
 
 sub L {
   my ($xi) = @_;
@@ -94,7 +154,17 @@ sub dLdxi {
   }
 }
 
-## Tag: util_funcs ##
+=head2 :util_funcs
+
+=over 
+
+=item join_data
+
+Takes two AoA (array of arrayref) references and returns the first, having the second appended to it. Further if the last row of the first and the first row of the second have the same first element (e.g. time) that row is not repeated in the result. This function may be used "in place", as the first array reference is appended to; in other words, one need not use the return value.
+
+=back
+
+=cut
 
 sub join_data {
   my ($container, $new) = @_;
@@ -112,3 +182,17 @@ sub join_data {
 
 1;
 
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Physics-UEMColumn>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
