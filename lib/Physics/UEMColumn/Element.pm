@@ -1,3 +1,47 @@
+=head1 NAME
+
+Physics::UEMColumn::Element - Base class for "optical" elements in a UEM system
+
+=head1 SYNOPSIS
+
+ package Physics::UEMColumn::MyElement;
+ use Moose;
+ extends 'Physics::UEMColumn::Element';
+
+=head1 DESCRIPTION
+
+L<Physics::UEMColumn::Element> is a base class for "optical" elements in a UEM system. Mostly it defines the physical bounds of the element. All objects passed to L<Physics::UEMColumn::Column> via C<add_element> must be subclasses of this base.
+
+=head1 ATTRIBUTES
+
+=over
+
+=item C<location>
+
+The position of the center of the element in the column. Unit: m
+
+=item C<length>
+
+The full effective length of the element. "Effective" here means the size that the pulse sees; e.g. the length of the pole piece gap of a magenetic lens. Unit: m
+
+=item C<cutoff>
+
+A number representing the number of C<length>s away from the the center of the element before the element may be safely ignored. The default is C<3>.
+
+=back
+
+=head1 METHODS
+
+=over
+
+=item C<effect>
+
+Returns a hash reference of subroutine references defining the effect that the element has on a pulse's width (C<M_t>), length (C<M_z>) and velocity (C<acc_z>). These subroutine references expect arguments of time, pulse position and pulse velocty (C<t>, C<z>, C<v>), they return a number quantifying this effect.
+
+=back
+
+=cut
+
 package Physics::UEMColumn::Element;
 
   use Moose;
