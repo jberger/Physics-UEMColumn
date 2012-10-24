@@ -13,3 +13,15 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+=head1 NAME
+
+Physics::UEMColumn::Laser
+
+=head1 SYNOPSIS
+
+ use strict;
+ use warnings;
+
+ use Physics::UEMColumn alias => ':standard';
+
+ my $laser = Laser->new()

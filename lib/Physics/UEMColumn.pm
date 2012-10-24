@@ -63,10 +63,14 @@ use List::Util 'sum';
 use PerlGSL::DiffEq;
 
 use Physics::UEMColumn::Column;
-use Physics::UEMColumn::Element;
 use Physics::UEMColumn::Pulse;
 use Physics::UEMColumn::Laser;
 use Physics::UEMColumn::Photocathode;
+
+#use Physics::UEMColumn::Element;
+use Physics::UEMColumn::DCAccelerator;
+use Physics::UEMColumn::MagneticLens;
+use Physics::UEMColumn::RFCavity;
 
 use Physics::UEMColumn::Auxiliary ':all';
 
