@@ -78,18 +78,33 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-Physics::UEMColumn::Element - A class representing a DC acceleration region in a UEM system
+Physics::UEMColumn::DCAccelerator - A class representing a DC acceleration region in a UEM system
 
 =head1 SYNOPSIS
 
-  use Physics::UEMColumn alias => ':standard';
-  my $acc = DCAccelerator->new(
-
-  );
+ use Physics::UEMColumn alias => ':standard';
+ my $acc = DCAccelerator->new(
+   length  => '20 mm',
+   voltage => '20 kilovolts',
+ );
 
 =head1 DESCRIPTION
 
-L<Physics::UEMColumn::Accelerator> is a class representing a DC (static electric field) acceleration region in a UEM system It is itself a subclass of L<Physics::UEMColumn::Element> and inherits its attributes and methods. Additionally it provides:
+L<Physics::UEMColumn::Accelerator> is a class representing a DC (static electric field) acceleration region in a UEM system. It is a subclass of L<Physics::UEMColumn::Accelerator> and inherits its attributes and methods. Additionally it provides:
+
+=head1 ATTRIBUTES
+
+=over
+
+=item C<voltage>
+
+The static electric potential in the accelerator. Unit: V
+
+=item C<sharpness>
+
+The potential is modeled as a C<tanh>, this parameter (defaults to 10) is related to the slope of the tanh near the end of the region. For example a value approaching infinity approximates a step function.
+
+=back
 
 =head1 METHODS
 
@@ -97,7 +112,19 @@ L<Physics::UEMColumn::Accelerator> is a class representing a DC (static electric
 
 =item C<field>
 
-Returns a field strength possibly derived from other attributes. In this base class it simply returns zero. This method is intended to be redefined on subclassing.
+Defined as C<voltage> / C<length>
+
+=item C<effect>
+
+Returns an hash reference of effect subroutine references (C<M_t>, C<M_z>, C<acc_z>). See L<Physics::UEMColumn::Element/METHODS> for more.
+
+=item C<est_exit_vel>
+
+Returns an estimate of the velocity of the pulse on exiting the region. This in not likely to be exact. It is used in estimating the end time of the simulation. This overrides the base class and is specific to DC accelerators.
+
+=item C<est_exit_time>
+
+Returns an estimate of the time that the pulse on exits the region. This in not likely to be exact. It is used in estimating the end time of the simulation. This overrides the base class and is specific to DC accelerators.
 
 =back
 

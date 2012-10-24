@@ -13,6 +13,14 @@ method field () {
   return 0;
 }
 
+method est_exit_vel () {
+  return 0;
+}
+
+method est_exit_time () {
+  return 0;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -37,7 +45,7 @@ L<Physics::UEMColumn::Accelerator> is a base class for acceleration regions in a
 
 =item C<location>
 
-unlike L<Physics::UEMColumn::Element>, accelerators' location defines the start of the region and defaults to a C<0>.
+Unlike L<Physics::UEMColumn::Element>, accelerators' location defines the start of the region and defaults to a C<0>.
 
 =back
 
@@ -48,6 +56,14 @@ unlike L<Physics::UEMColumn::Element>, accelerators' location defines the start 
 =item C<field>
 
 Returns a field strength possibly derived from other attributes. In this base class it simply returns zero. This method is intended to be redefined on subclassing.
+
+=item C<est_exit_vel>
+
+Returns an estimate of the velocity of the pulse on exiting the region. This in not likely to be exact. It is used in estimating the end time of the simulation. The base class' implementation returns zero and is intended to be subclassed.
+
+=item C<est_exit_time>
+
+Returns an estimate of the time that the pulse on exits the region. This in not likely to be exact. It is used in estimating the end time of the simulation. The base class' implementation returns zero and is intended to be subclassed.
 
 =back
 
