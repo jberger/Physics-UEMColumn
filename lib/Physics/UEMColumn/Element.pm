@@ -60,7 +60,7 @@ A number representing the number of C<length>s away from the the center of the e
 
 =item C<effect>
 
-Returns a hash reference of subroutine references defining the effect that the element has on a pulse's width (C<M_t>), length (C<M_z>) and velocity (C<acc_z>). These subroutine references expect arguments of time, pulse position and pulse velocty (C<t>, C<z>, C<v>), they return a number quantifying this effect. The base class simply returns an empty hashreference. This method is meant to be redefined on subclassing.
+Returns a hash reference of subroutine references defining the effect that the element has on a pulse's width (C<M_t>), length (C<M_z>) and velocity (C<acc_z>). These subroutine references expect arguments of time, pulse position and pulse velocty (C<t>, C<z>, C<v>), they return a number quantifying this effect. The base class simply returns an empty hashreference. This method is intended to be redefined on subclassing.
 
 =back
 
