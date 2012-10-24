@@ -30,7 +30,7 @@ my $builder = Module::Build->new(
       bugtracker => "http://github.com/jberger/Physics-UEMColumn/issues",
     },
     no_index => {
-      #file      => [ 'README.pod' ],
+      file      => [ 'README.pod' ],
       directory => [ 'examples', 't' ],
     },
   },
