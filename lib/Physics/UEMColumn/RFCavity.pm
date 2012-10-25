@@ -90,4 +90,68 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
+=head1 NAME
+
+Physics::UEMColumn::RFCavity - A class representing an RF cavity in a UEM system
+
+=head1 SYNOPSIS
+
+ use Physics::UEMColumn alias => ':standard';
+ my $lens = MagneticLens->new(
+   location => $position . 'cm',
+   length   => $length . 'cm',
+   strength => $strength,
+ );
+
+=head1 DESCRIPTION
+
+L<Physics::UEMColumn::RFCavity> is a class representing a RF cavity (z lens) in a UEM system. It is a subclass of L<Physics::UEMColumn::Element> and inherits its attributes and methods. Additionally it provides:
+
+=head1 ATTRIBUTES
+
+=over
+
+=item C<stength>
+
+The electric field strength of the RF cavity. Unit: V/m
+
+=item C<frequency>
+
+The resonant frequency of the RF Cavity. Unit: Hz
+
+=item C<phase>
+
+The phase offset in radians (i.e. 0 - 2*pi) of the electric field oscillation. In practice this determines the the mode of operation of the cavity (compressor, accelerator). Default is C<0>.
+
+=item C<order>
+
+The super-Gaussian order C<exp( - $x ** ( 2 * $order ) )> determining the shape of the lens. Default is C<2>.
+
+=back
+
+=head1 METHODS
+
+=over
+
+=item C<effect>
+
+Returns a hash reference of effect subroutine references (C<M_t>, C<M_z>, C<acc_z>). See L<Physics::UEMColumn::Element/METHODS> for more.
+
+=back
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Physics-UEMColumn>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
 
