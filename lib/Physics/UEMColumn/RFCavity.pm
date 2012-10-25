@@ -97,10 +97,11 @@ Physics::UEMColumn::RFCavity - A class representing an RF cavity in a UEM system
 =head1 SYNOPSIS
 
  use Physics::UEMColumn alias => ':standard';
- my $lens = MagneticLens->new(
-   location => $position . 'cm',
-   length   => $length . 'cm',
-   strength => $strength,
+ my $rf_cav = RFCavity->new(
+   location  => $location . 'cm',
+   length    => '2 cm',
+   strength  => '230 kilovolts / m',
+   frequency => '3 gigahertz',
  );
 
 =head1 DESCRIPTION
