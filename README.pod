@@ -45,6 +45,14 @@ The model is a self-similar Gaussian model, and therefore a mean-field model; fu
 
 Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathod and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
 
+=head2 API Stability
+
+The author hopes that the user-facing API is stable. Unfortunately the internal and subclassing API are still likely to change; use with care.
+
+=head2 Units Handling
+
+L<Physics::UEMColumn> uses C<MooseX::Types::NumUnit> (and thus C<Physics::Unit>) to handle unit coercion. This allows units of different (but compatible) unit to be given to initialization directives. Those units are automatically coerced to the proper internal unit. Please note however that returned values are in the unit system used internally. That is to say, these coercions are an input convenience and not a choice of active unit system.
+
 =head1 THE C<Physics::UEMColumn> CLASS
 
 Instances of the L<Physics::UEMColumn> class may be thought of as the "simulation" objects. The state of a simulation and all its constituent objects are stored in an instance of this class. It does not rely on any internal global state and thus several objects may be used simultaneously.
