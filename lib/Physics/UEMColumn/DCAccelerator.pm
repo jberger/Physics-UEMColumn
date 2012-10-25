@@ -116,7 +116,7 @@ Defined as C<voltage> / C<length>
 
 =item C<effect>
 
-Returns an hash reference of effect subroutine references (C<M_t>, C<M_z>, C<acc_z>). See L<Physics::UEMColumn::Element/METHODS> for more.
+Returns a hash reference of effect subroutine references (C<M_t>, C<M_z>, C<acc_z>). See L<Physics::UEMColumn::Element/METHODS> for more.
 
 =item C<est_exit_vel>
 
