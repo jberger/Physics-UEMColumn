@@ -62,7 +62,7 @@ While sensible defaults have been given to the underlying solver's options (see 
 
 =head2 Examples
 
-Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathod and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The triplet is tuned to generate a 3D focus, presumably at the sample stage location. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
+Included in the source package is an F<examples> directory. Contained within is a system analogous to an optical Cooke triplet. After a Tantalum photocathode and the acceleration region, is a magnetic lens, RF cavity and magnetic lens triplet. The triplet is tuned to generate a 3D focus, presumably at the sample stage location. The script then uses L<PDL> and L<PDL::Graphics::Prima> to plot the transverse (red) and longitudinal (green) HW1/eM beam widths.
 
 =head2 API Stability
 
@@ -72,7 +72,7 @@ The author hopes that the user-facing API is stable. Unfortunately the internal 
 
 L<Physics::UEMColumn> uses C<MooseX::Types::NumUnit> (and thus C<Physics::Unit>) to handle unit coercion. This allows units of different (but compatible) unit to be given to initialization directives. Those units are automatically coerced to the proper internal unit. Please note however that returned values are in the unit system used internally. That is to say, these coercions are an input convenience and not a choice of active unit system.
 
-L<Physics::Unit> is missing a few commonly used abbreviated units, for example C<fs> is unrecognized. It may be prudent to use the L<physics-unit> script to check a new unit for existance. In these cases, the long form of the unit (e.g. C<femtoseconds>) may be used. Such omissions may be filed as bugs on that module and will hopefully be present in subsequent releases.
+L<Physics::Unit> is missing a few commonly used abbreviated units, for example C<fs> is unrecognized. It may be prudent to use the L<physics-unit> script to check a new unit for existence. In these cases, the long form of the unit (e.g. C<femtoseconds>) may be used. Such omissions may be filed as bugs on that module and will hopefully be present in subsequent releases.
 
 =cut
 
@@ -430,7 +430,7 @@ method _make_diffeqs () {
 
 =head1 Class Aliases
 
-Since this is an object oriented simulation, many classes are available to be instantiated, unfortunately many have rather long names. To prevent carpal tunnel syndrom, these classes may be aliased in the current package (via stub functions) to remove the leading namespace C<Physics::UEMColumn::>. To create these aliases, use the import directive C<alias>
+Since this is an object oriented simulation, many classes are available to be instantiated, unfortunately many have rather long names. To prevent carpal tunnel syndrome, these classes may be aliased in the current package (via stub functions) to remove the leading namespace C<Physics::UEMColumn::>. To create these aliases, use the import directive C<alias>
 
  use Physics::UEMColumn alias => ':standard';
 
