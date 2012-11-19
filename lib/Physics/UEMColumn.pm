@@ -58,6 +58,8 @@ The author hopes that the user-facing API is stable. Unfortunately the internal 
 
 L<Physics::UEMColumn> uses C<MooseX::Types::NumUnit> (and thus C<Physics::Unit>) to handle unit coercion. This allows units of different (but compatible) unit to be given to initialization directives. Those units are automatically coerced to the proper internal unit. Please note however that returned values are in the unit system used internally. That is to say, these coercions are an input convenience and not a choice of active unit system.
 
+L<Physics::Unit> is missing a few commonly used abbreviated units, for example C<fs> is unrecognized. It may be prudent to use the L<physics-unit> script to check a new unit for existance. In these cases, the long form of the unit (e.g. C<femtoseconds>) may be used. Such omissions may be filed as bugs on that module and will hopefully be present in subsequent releases.
+
 =cut
 
 use Moose;
