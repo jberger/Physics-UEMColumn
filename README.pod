@@ -39,7 +39,21 @@ This extended model calculates the dynamics of electron pulse propagation for an
 
 =head2 Caveats
 
-The model is a self-similar Gaussian model, and therefore a mean-field model; futher the modeling of external forces is restricted to perfect lensing. Also, the equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
+=over
+
+=item *
+
+The model is a self-similar Gaussian model, and therefore a mean-field model; futher the modeling of external forces is restricted to perfect lensing. 
+
+=item *
+
+The equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
+
+=item * 
+
+While sensible defaults have been given to the underlying solver's options (see L</solver_opts>, these defaults may not always produce a desired or physically correct output. Care should be taken to be ensure that the solver is setup correctly especially for the scales involved in your particular simulation.
+
+=back
 
 =head2 Examples
 
