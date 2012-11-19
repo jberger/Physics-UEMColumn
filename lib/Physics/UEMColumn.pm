@@ -416,7 +416,7 @@ method _make_diffeqs () {
 
 =head1 Class Aliases
 
-Since this is an object oriented simulation, many classes available to be created. To prevent carpal tunnel syndrom, these classes may be aliased in the current package (via stub functions) to remove the leading namespace C<Physics::UEMColumn::>. To create these aliases, use the import directive C<alias>
+Since this is an object oriented simulation, many classes are available to be instantiated, unfortunately many have rather long names. To prevent carpal tunnel syndrom, these classes may be aliased in the current package (via stub functions) to remove the leading namespace C<Physics::UEMColumn::>. To create these aliases, use the import directive C<alias>
 
  use Physics::UEMColumn alias => ':standard';
 
