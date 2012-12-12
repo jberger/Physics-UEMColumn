@@ -3,17 +3,16 @@
 use strict;
 use warnings;
 
+my $use_pdl;
 BEGIN {
   for my $lib ( 'lib', '../lib' ) {
     unshift @INC, $lib if -d $lib;
   }
+  $use_pdl = eval { require PDL; require PDL::Graphics::Prima::Simple; 1 } || 0;
 }
 
 use Physics::UEMColumn alias => ':standard';
 use Physics::UEMColumn::Auxiliary ':materials';
-
-use PDL;
-use PDL::Graphics::Prima::Simple [700,500];
 
 my $laser = Laser->new(
   width    => '1 mm',
@@ -65,30 +64,41 @@ my $rf_cav = RFCavity->new(
 );
 $sim->add_element($rf_cav);
 
-my $result = pdl( $sim->propagate );
+my $result = $sim->propagate;
 
-my $z  = $result->slice('(1),');
-my $st = $result->slice('(3),');
-my $sz = $result->slice('(4),');
+if ( $use_pdl ) {
 
-plot(
-  -st => ds::Pair( 
-    $z, sqrt( $st / maximum($st) ),
-    colors => pdl(255,0,0)->rgb_to_color,
-    plotType => ppair::Lines,
-    lineWidths => 3,
-  ),
-  -sz => ds::Pair( 
-    $z, sqrt( $sz / maximum($sz) ),
-    colors => pdl(0,255,0)->rgb_to_color,
-    plotType => ppair::Lines,
-    lineWidths => 3,
-  ),
-  x => { label => 'Position (m)' },
-);
+  PDL->import;
+  PDL::Graphics::Prima::Simple->import([700,500]);
 
-my $min_length = sqrt( 2 * minimum($sz)->sclr );
-my $min_duration = $min_length / $sim->pulse->velocity;
-printf "Min Length: %.2fnm (%.2ffs)\n", $min_length/1e-9, $min_duration/1e-15;
+  my $result = pdl( $result );
 
+  my $z  = $result->slice('(1),');
+  my $st = $result->slice('(3),');
+  my $sz = $result->slice('(4),');
+
+  plot(
+    -st => ds::Pair( 
+      $z, sqrt( $st / maximum($st) ),
+      colors => pdl(255,0,0)->rgb_to_color,
+      plotType => ppair::Lines,
+      lineWidths => 3,
+    ),
+    -sz => ds::Pair( 
+      $z, sqrt( $sz / maximum($sz) ),
+      colors => pdl(0,255,0)->rgb_to_color,
+      plotType => ppair::Lines,
+      lineWidths => 3,
+    ),
+    x => { label => 'Position (m)' },
+  );
+
+  my $min_length = sqrt( 2 * minimum($sz)->sclr );
+  my $min_duration = $min_length / $sim->pulse->velocity;
+  printf "Min Length: %.2fnm (%.2ffs)\n", $min_length/1e-9, $min_duration/1e-15;
+
+} else {
+  warn "PDL or PDL::Graphics::Prima are not available\n";
+  print join( ',', @$_ ) . "\n" for @$result;
+}
 
