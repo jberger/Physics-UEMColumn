@@ -25,7 +25,6 @@ use Method::Signatures;
 
 use MooseX::Types::NumUnit qw/num_of_unit/;
 use Physics::UEMColumn::Auxiliary ':constants';
-use MooseX::Types::NumUnit qw/num_of_unit/;
 
 # user specified attributes
 
