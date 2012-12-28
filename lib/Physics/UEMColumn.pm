@@ -289,7 +289,6 @@ method propagate () {
 
     my $segment_result = $self->_evaluate_single_run();
     join_data( $result, $segment_result );
-    last if $self->debug;
   }
   
   my $stored_data = $self->pulse->data;
