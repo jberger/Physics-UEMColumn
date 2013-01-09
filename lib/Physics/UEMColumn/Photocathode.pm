@@ -100,7 +100,7 @@ method generate_pulse ( Num $num ) {
   my $delta_E = $e_laser - $work_function;
   my $velfront = sqrt( 2 * $delta_E / me );
 
-  my $eta_t = me * $e_fermi / 3 * ( $e_laser - $work_function ) / ( $e_laser + $e_fermi );
+  my $eta_t = me / 3 * ( $e_laser - $work_function );
   my $sigma_z = (($velfront*$tau)**2) / 2 + ( qe / ( 4 * me ) * $field * ($tau**2))**2;
 
   my $pulse = Physics::UEMColumn::Pulse->new(
