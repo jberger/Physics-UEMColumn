@@ -101,17 +101,19 @@ Internal functions related to implementing the AG model (see M&S original paper)
 sub L {
   my ($xi) = @_;
 
-  if ($xi >= 1) {
+  return 1 if $xi == 1;
+
+  if ($xi > 1) {
     my $sqrt = sqrt(($xi**2) - 1);
     return log($xi + $sqrt) / $sqrt;
+  } 
 
-  } elsif ( $xi >= 0) {
+  if ($xi >= 0) {
     my $sqrt = sqrt(1 - ($xi**2));
     return asin($sqrt) / $sqrt;
+  } 
 
-  } else {
-    die "xi is out of range";
-  }
+  die "xi is out of range";
 }
 
 sub L_t {
