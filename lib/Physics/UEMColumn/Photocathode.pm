@@ -112,7 +112,7 @@ method generate_pulse ( Num $num ) {
     eta_t    => $eta_t,
     eta_z    => $eta_t / 4,
     gamma_t  => 0,
-    gamma_z  => sqrt($sigma_z) * ( 0.06 * me * $velfront + qe / sqrt(2) * $field * $tau),
+    gamma_z  => sqrt($sigma_z) * ( me * $velfront + qe / sqrt(2) * $field * $tau),
   );
 
   return $pulse;
