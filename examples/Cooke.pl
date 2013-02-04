@@ -12,7 +12,6 @@ BEGIN {
 }
 
 use Physics::UEMColumn alias => ':standard';
-use Physics::UEMColumn::Auxiliary ':materials';
 
 my $laser = Laser->new(
   width    => '1 mm',
@@ -29,7 +28,7 @@ my $column = Column->new(
   length       => '400 mm', 
   laser        => $laser,
   accelerator  => $acc,
-  photocathode => Photocathode->new(Ta),
+  photocathode => Photocathode->new( work_function => '4.25 eV' ), # Ta
 );
 
 my $sim = Physics::UEMColumn->new(

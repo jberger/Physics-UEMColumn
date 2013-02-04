@@ -37,14 +37,6 @@ my $type_energy = num_of_unit( 'J' );
 
 =over
 
-=item C<energy_fermi>
-
-The Fermi energy of the material. Required. Unit: J
-
-=cut
-
-has 'energy_fermi' => ( isa => $type_energy, is => 'ro', required => 1 ); 
-
 =item C<work_function>
 
 The "work function" of the material. Rquired. Unit: J
@@ -68,6 +60,14 @@ Holder for a reference to the containing Column object. This should not be set m
 =cut
 
 has 'column' => ( isa => 'Physics::UEMColumn::Column', is => 'rw', predicate => 'has_column' );
+
+=item C<energy_fermi>
+
+The Fermi energy of the material. This was required in a previous version of the code (before using the Dowell result), it is no longer required nor used. Unit: J
+
+=cut
+
+has 'energy_fermi' => ( isa => $type_energy, is => 'ro', predicate => 'has_energy_fermi' ); 
 
 =back
 
