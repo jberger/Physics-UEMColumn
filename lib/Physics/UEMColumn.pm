@@ -486,7 +486,7 @@ sub _setup_aliases {
     }
 
     no strict 'refs';
-    *{$caller . '::' . $short} = sub () { $full };
+    *{$caller . '::' . $short} = eval "sub () { '$full' }";
   }
 }
 
