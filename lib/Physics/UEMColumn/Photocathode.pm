@@ -12,7 +12,6 @@ Physics::UEMColumn::Photocathode - Class representing a photocathode for the Phy
   use Physics::UEMColumn alias => ':standard';
 
   my $photocathode = Photocathode->new(
-    energy_fermi => '5.3 eV',
     work_function => '4.25 eV',
   );
 
