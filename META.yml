@@ -6,7 +6,7 @@ build_requires: {}
 configure_requires:
   Module::Build: 0.38
 dynamic_config: 1
-generated_by: 'Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630'
+generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.120630'
 license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -21,7 +21,7 @@ no_index:
 provides:
   Physics::UEMColumn:
     file: lib/Physics/UEMColumn.pm
-    version: 0.900
+    version: 0.901
   Physics::UEMColumn::Accelerator:
     file: lib/Physics/UEMColumn/Accelerator.pm
     version: 0
@@ -64,4 +64,4 @@ requires:
 resources:
   bugtracker: http://github.com/jberger/Physics-UEMColumn/issues
   repository: http://github.com/jberger/Physics-UEMColumn
-version: 0.900
+version: 0.901

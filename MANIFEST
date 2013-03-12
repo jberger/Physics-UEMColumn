@@ -1,4 +1,5 @@
 Build.PL
+Changes
 examples/Cooke.pl
 lib/Physics/UEMColumn.pm
 lib/Physics/UEMColumn/Accelerator.pm
@@ -13,8 +14,8 @@ lib/Physics/UEMColumn/Pulse.pm
 lib/Physics/UEMColumn/RFCavity.pm
 LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 README.pod
 t/free-propagation.t
 t/import-alias.t
-META.yml
-META.json

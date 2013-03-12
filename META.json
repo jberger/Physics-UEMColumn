@@ -4,7 +4,7 @@
       "Joel Berger"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120630",
    "license" : [
       "unknown"
    ],
@@ -45,7 +45,7 @@
    "provides" : {
       "Physics::UEMColumn" : {
          "file" : "lib/Physics/UEMColumn.pm",
-         "version" : "0.900"
+         "version" : "0.901"
       },
       "Physics::UEMColumn::Accelerator" : {
          "file" : "lib/Physics/UEMColumn/Accelerator.pm",
@@ -97,5 +97,5 @@
          "url" : "http://github.com/jberger/Physics-UEMColumn"
       }
    },
-   "version" : "0.900"
+   "version" : "0.901"
 }
