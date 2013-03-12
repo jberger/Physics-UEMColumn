@@ -107,6 +107,7 @@ method _make_sigma_t () {
 }
 method _make_sigma_z () {
   return $self->initial_length ** 2 / 2;
+}
 
 method _make_eta_t () {
   return me * $self->excess_photoemission_energy / 3;
