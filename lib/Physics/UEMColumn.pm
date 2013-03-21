@@ -1,6 +1,6 @@
 package Physics::UEMColumn;
 
-our $VERSION = '0.901';
+our $VERSION = '0.902';
 $VERSION = eval $VERSION;
 
 =head1 NAME
