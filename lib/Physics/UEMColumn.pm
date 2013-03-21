@@ -52,11 +52,11 @@ The model is a self-similar Gaussian model, and therefore a mean-field model; fu
 
 =item *
 
-The equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the C<Physics::UEMColumn::Photocathode> object to create one automatically.
+The equations governing the generation of pulse (and therefore the initial parameters), are as-yet unpublished, and unexplained. Should this not be preferable, one should manually create a L<Physics::UEMColumn::Pulse> object, rather than allowing the L<Physics::UEMColumn::Photocathode> object to create one automatically.
 
 =item * 
 
-While sensible defaults have been given to the underlying solver's options (see L</solver_opts>, these defaults may not always produce a desired or physically correct output. Care should be taken to be ensure that the solver is setup correctly especially for the scales involved in your particular simulation.
+While sensible defaults have been given to the underlying solver's options (see L</solver_opts>), these defaults may not always produce a desired or physically correct output. Care should be taken to be ensure that the solver is setup correctly especially for the scales involved in your particular simulation.
 
 =back
 
@@ -433,7 +433,7 @@ Since this is an object oriented simulation, many classes are available to be in
 
  use Physics::UEMColumn alias => ':standard';
 
-The value of the alias directive can be an arrayref of strings of the names of the classes to be aliased, or else the special strings C<:all> (attempts to alias all classes) or C<:standard> (aliases the classes C<Laser Column Photocathode MagneticLens DCAccelerator RFCavity>).
+The value of the alias directive can be an arrayref of strings of the names of the classes to be aliased, or else the special strings C<:all> (attempts to alias all classes) or C<:standard> (aliases the classes C<Laser Column Photocathode MagneticLens DCAccelerator RFCavity Pulse>).
 
 =cut
 
@@ -462,7 +462,7 @@ sub _setup_aliases {
     keys %Physics::UEMColumn::;
 
   # these are the classes that will be exported in place of the :standard tag
-  my @standard = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / );
+  my @standard = ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity Pulse / );
 
   # define requested aliases
   my @to_alias = ref $alias ? @$alias : ( $alias );

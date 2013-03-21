@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 19;
+use Test::More;
 
 {
   package Local::Test::None;
@@ -23,7 +23,7 @@ use Test::More tests => 19;
   package Local::Test::Standard;
   use Physics::UEMColumn alias => ':standard';
 
-  for my $alias ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity / ) {
+  for my $alias ( qw/ Laser Column Photocathode MagneticLens DCAccelerator RFCavity Pulse / ) {
     my $func = Local::Test::Standard->can($alias);
     Test::More::ok( $func, "Alias is imported ($alias)" );
     Test::More::is( $func->(), "Physics::UEMColumn::$alias", "Alias has correct target" );
@@ -39,4 +39,6 @@ use Test::More tests => 19;
   Test::More::can_ok( 'Local::Test::All', 'Element' );
   Test::More::is( Element, 'Physics::UEMColumn::Element', 'correct definition of Element alias' );
 }
+
+done_testing;
 
