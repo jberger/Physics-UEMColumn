@@ -80,13 +80,13 @@ if ( $use_pdl ) {
     -st => ds::Pair( 
       $z, sqrt( $st / maximum($st) ),
       colors => pdl(255,0,0)->rgb_to_color,
-      plotType => ppair::Lines,
+      plotType => ppair::Lines(),
       lineWidths => 3,
     ),
     -sz => ds::Pair( 
       $z, sqrt( $sz / maximum($sz) ),
       colors => pdl(0,255,0)->rgb_to_color,
-      plotType => ppair::Lines,
+      plotType => ppair::Lines(),
       lineWidths => 3,
     ),
     x => { label => 'Position (m)' },
