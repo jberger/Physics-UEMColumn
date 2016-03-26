@@ -100,7 +100,6 @@ use Physics::UEMColumn::Auxiliary ':all';
 
 use MooseX::Types::NumUnit qw/num_of_unit/;
 my $seconds = num_of_unit('s');
-my $relativity;
 
 =head1 THE C<Physics::UEMColumn> CLASS
 
@@ -235,13 +234,10 @@ method BUILD ($param) {
   
   $solver_opts->{h_max}  = exists $solver_opts->{h_max}  ? $solver_opts->{h_max}  : 5e-12;
   $solver_opts->{h_init} = exists $solver_opts->{h_init} ? $solver_opts->{h_init} : 5e-13;
-
-  $relativity = $self->relativity;
 }
 
-sub gamma {
-  my ($v) = @_;
-  return $relativity ? 1 / sqrt(1 - ($v/vc)**2 ) : 1
+method gamma ($v) {
+  return $self->relativity ? lorentz_gamma($v) : 1
 }
 
 method _generate_pulse () {
@@ -383,11 +379,11 @@ method _make_diffeqs () {
     if (ref($element) =~ /Accelerator/ && $self->relativity) {
       push @M_t, sub {
         my ($t, $z, $v) = @_;
-        return ($effect->{M_t}->($t, $z, $v) * gamma($v) * (1+($v/vc)**2));
+        return ($effect->{M_t}->($t, $z, $v) * $self->gamma($v) * (1+($v/vc)**2));
       } if defined $effect->{M_t};
       push @M_z, sub {
         my ($t, $z, $v) = @_;
-        return ($effect->{M_z}->($t, $z, $v) * (1-$v*u_z($sz,$gz)/vc**2)/gamma($v)**2);
+        return ($effect->{M_z}->($t, $z, $v) * (1-$v*u_z($sz,$gz)/vc**2)/$self->gamma($v)**2);
       } if defined $effect->{M_z};
     } else {
       push @M_t, $effect->{M_t} if defined $effect->{M_t};
@@ -430,22 +426,25 @@ method _make_diffeqs () {
     $M_z   ||= 0;
     $acc_z ||= 0;
 
+    #set gamma for relativisitic effects
+    my $gamma = $self->gamma($v);
+
     ## Setup Differentials ##
 
     my $dz = $v;
-    my $dv = $acc_z / gamma($v)**3;
+    my $dv = $acc_z / $gamma**3;
 
-    my $dst = 2 * $gt / me / gamma($v);
-    my $dsz = 2 * $gz / me / gamma($v);
+    my $dst = 2 * $gt / me / $gamma;
+    my $dsz = 2 * $gz / me / $gamma;
 
     my $dgt = 
       (($lg2_t + ($gt**2)) / ( me * $st ) 
       + $Cn / sqrt($st) * L_t(sqrt($sz/$st))
-      - $M_t * $st)/gamma($v);
+      - $M_t * $st)/$gamma;
     my $dgz = 
       (($lg2_z + ($gz**2)) / ( me * $sz ) 
       + $Cn / sqrt($sz) * L_z(sqrt($sz/$st))
-      - $M_z * $sz)/gamma($v);
+      - $M_z * $sz)/$gamma;
 
     return ($dz, $dv, $dst, $dsz, $dgt, $dgz);
   };
