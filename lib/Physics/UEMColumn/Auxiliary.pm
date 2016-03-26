@@ -26,7 +26,7 @@ use Math::Trig;
 use parent 'Exporter';
 our %EXPORT_TAGS = ( 
   constants   => [ qw/ pi me qe epsilon_0 vc / ],
-  model_funcs => [ qw/ L L_t L_z dLdxi dL_tdxi dL_zdxi / ],
+  model_funcs => [ qw/ L L_t L_z dLdxi dL_tdxi dL_zdxi lorentz_gamma u_z/ ],
   util_funcs  => [ qw/ join_data / ],
   materials   => [ qw/ Ta / ],
 );
@@ -119,15 +119,23 @@ sub L {
 sub L_t {
   my ($xi) = @_;
   my $L = L($xi);
-
   return 1.5 * ( $L + (($xi**2)*$L - $xi) / (1 - $xi**2) );
 }
 
 sub L_z {
   my ($xi) = @_;
   my $L = L($xi);
-
   return 3 * ($xi**2) * ( $xi * $L - 1) / (($xi**2) - 1)
+}
+
+sub lorentz_gamma {
+  my ($v) = @_;
+  return 1 / sqrt(1 - ($v/vc)**2 )
+}
+
+sub u_z {
+  my ($sz,$gz) = @_;
+  return $gz / me / sqrt($sz)
 }
 
 sub dL_tdxi {
