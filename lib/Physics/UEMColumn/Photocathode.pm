@@ -31,6 +31,7 @@ use Physics::UEMColumn::Pulse;
 use Physics::UEMColumn::Auxiliary qw/:constants/;
 
 my $type_energy = num_of_unit( 'J' );
+my $type_eta    = num_of_unit('(kg J)');
 
 =head1 ATTRIBUTES
 
@@ -38,11 +39,19 @@ my $type_energy = num_of_unit( 'J' );
 
 =item C<work_function>
 
-The "work function" of the material. Rquired. Unit: J
+The "work function" of the material. Required. Unit: J
 
 =cut
 
 has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
+
+=item C<eta_t>
+
+The RMS transverse momentum spread (squared) of a photoexcited pulse from the Photocathode. It can either be set manually (e.g., fitting of experimental data) or by default. WARNING! The default is determined by the expression derived by Dowell [See doi:10.1103/PhysRevSTAB.12.074201] which has been shown to be inconsistent with experimental data.
+
+=cut
+
+has 'eta_t' => ( isa => $type_eta, is => 'ro', default => 0 );
 
 =item C<location>
 
@@ -99,7 +108,7 @@ method generate_pulse ( Num $num ) {
   my $delta_E = $e_laser - $work_function;
   my $velfront = sqrt( 2 * $delta_E / me );
 
-  my $eta_t = me / 3 * ( $e_laser - $work_function );
+  my $eta_t = $self->eta_t || me / 3 * ( $e_laser - $work_function );
   my $sigma_z = (($velfront*$tau)**2) / 2 + ( qe / ( 4 * me ) * $field * ($tau**2))**2;
 
   my $pulse = Physics::UEMColumn::Pulse->new(
