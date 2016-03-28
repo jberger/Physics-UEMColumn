@@ -202,6 +202,14 @@ The options hashref passed directly to the C<ode_solver> from L<PerlGSL::DiffEq>
 
 has 'solver_opts' => ( isa => 'HashRef', is => 'rw', default => sub { {} } );
 
+=item C<relativity>
+
+Whether the simulation is relativistic or not.
+
+=cut
+
+has 'relativity' => ( isa => 'Bool', is => 'ro', default => 1 );
+
 =back
 
 =cut
@@ -226,6 +234,10 @@ method BUILD ($param) {
   
   $solver_opts->{h_max}  = exists $solver_opts->{h_max}  ? $solver_opts->{h_max}  : 5e-12;
   $solver_opts->{h_init} = exists $solver_opts->{h_init} ? $solver_opts->{h_init} : 5e-13;
+}
+
+method gamma ($v) {
+  return $self->relativity ? lorentz_gamma($v) : 1
 }
 
 method _generate_pulse () {
@@ -360,10 +372,23 @@ method _make_diffeqs () {
   #get the effect of all the elements in the column
   my $elements = $self->column->elements;
   my (@M_t, @M_z, @acc_z);
-  foreach my $effect (map { $_->effect } @$elements) {
-    push @M_t,   $effect->{M_t} if defined $effect->{M_t};
-    push @M_z,   $effect->{M_z} if defined $effect->{M_z};
+  foreach my $element (@$elements) {
+    my $effect = $element->effect;
+    my ($sz, $gz) = map { $pulse->$_ } qw/sigma_z gamma_z/;
     push @acc_z, $effect->{acc} if defined $effect->{acc};
+    if (ref($element) =~ /Accelerator/ && $self->relativity) {
+      push @M_t, sub {
+        my ($t, $z, $v) = @_;
+        return ($effect->{M_t}->($t, $z, $v) * $self->gamma($v) * (1+($v/vc)**2));
+      } if defined $effect->{M_t};
+      push @M_z, sub {
+        my ($t, $z, $v) = @_;
+        return ($effect->{M_z}->($t, $z, $v) * (1-$v*u_z($sz,$gz)/vc**2)/$self->gamma($v)**2);
+      } if defined $effect->{M_z};
+    } else {
+      push @M_t, $effect->{M_t} if defined $effect->{M_t};
+      push @M_z, $effect->{M_z} if defined $effect->{M_z};
+    }
   }
 
   ## Create DE Code Reference ##
@@ -401,22 +426,25 @@ method _make_diffeqs () {
     $M_z   ||= 0;
     $acc_z ||= 0;
 
+    #set gamma for relativisitic effects
+    my $gamma = $self->gamma($v);
+
     ## Setup Differentials ##
 
     my $dz = $v;
-    my $dv = $acc_z;
+    my $dv = $acc_z / $gamma**3;
 
-    my $dst = 2 * $gt / me;
-    my $dsz = 2 * $gz / me;
+    my $dst = 2 * $gt / me / $gamma;
+    my $dsz = 2 * $gz / me / $gamma;
 
     my $dgt = 
-      ($lg2_t + ($gt**2)) / ( me * $st ) 
+      (($lg2_t + ($gt**2)) / ( me * $st ) 
       + $Cn / sqrt($st) * L_t(sqrt($sz/$st))
-      - $M_t * $st;
+      - $M_t * $st)/$gamma;
     my $dgz = 
-      ($lg2_z + ($gz**2)) / ( me * $sz ) 
+      (($lg2_z + ($gz**2)) / ( me * $sz ) 
       + $Cn / sqrt($sz) * L_z(sqrt($sz/$st))
-      - $M_z * $sz;
+      - $M_z * $sz)/$gamma;
 
     return ($dz, $dv, $dst, $dsz, $dgt, $dgz);
   };
