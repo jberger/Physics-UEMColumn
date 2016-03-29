@@ -118,6 +118,7 @@ sub L {
 
 sub L_t {
   my ($xi) = @_;
+  return 1 if $xi == 1;
   my $L = L($xi);
 
   return 1.5 * ( $L + (($xi**2)*$L - $xi) / (1 - $xi**2) );
@@ -125,6 +126,7 @@ sub L_t {
 
 sub L_z {
   my ($xi) = @_;
+  return 1 if $xi == 1;
   my $L = L($xi);
 
   return 3 * ($xi**2) * ( $xi * $L - 1) / (($xi**2) - 1)
