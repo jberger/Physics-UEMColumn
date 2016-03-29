@@ -47,11 +47,11 @@ has 'work_function' => ( isa => $type_energy, is => 'ro', required => 1 );
 
 =item C<eta_t>
 
-The RMS transverse momentum spread (squared) of a photoexcited pulse from the Photocathode. It can either be set manually (e.g., fitting of experimental data) or by default. WARNING! The default is determined by the expression derived by Dowell [See doi:10.1103/PhysRevSTAB.12.074201] which has been shown to be inconsistent with experimental data.
+The RMS transverse momentum spread (squared) of a photoexcited pulse from the Photocathode. It can either be set manually (e.g., for fitting of experimental data) or by default.
 
 =cut
 
-has 'eta_t' => ( isa => $type_eta, is => 'ro', default => 0 );
+has 'eta_t' => ( isa => $type_eta, is => 'ro', lazy => 1, builder => '_set_eta_t' );
 
 =item C<location>
 
@@ -108,7 +108,7 @@ method generate_pulse ( Num $num ) {
   my $delta_E = $e_laser - $work_function;
   my $velfront = sqrt( 2 * $delta_E / me );
 
-  my $eta_t = $self->eta_t || me / 3 * ( $e_laser - $work_function );
+  my $eta_t = $self->eta_t;
   my $sigma_z = (($velfront*$tau)**2) / 2 + ( qe / ( 4 * me ) * $field * ($tau**2))**2;
 
   my $pulse = Physics::UEMColumn::Pulse->new(
@@ -124,6 +124,22 @@ method generate_pulse ( Num $num ) {
   );
 
   return $pulse;
+}
+
+=item C<_set_eta_t>
+
+A method that builds eta_t. Currently sets eta_t based on an expression derived by Dowell [See doi:10.1103/PhysRevSTAB.12.074201] which has been shown to be inconsistent with experimental data.
+
+=cut
+
+method _set_eta_t {
+  my $column = $self->column;
+  my $laser = $column->laser;
+
+  my $e_laser = $laser->energy;
+  my $work_function = $self->work_function;
+
+  return me / 3 * ( $e_laser - $work_function )
 }
 
 =back
