@@ -53,6 +53,14 @@ The RMS transverse momentum spread (squared) of a photoexcited pulse from the Ph
 
 has 'eta_t' => ( isa => $type_eta, is => 'ro', lazy => 1, builder => '_set_eta_t' );
 
+=item C<effective_mass>
+
+The effective mass of the electron inside the metal associated with the band the electron is emitted from.
+
+=cut
+
+has 'effective_mass' => (isa => num_of_unit('(kg)'), is => 'ro', default => me);
+
 =item C<location>
 
 The location of the Photocathode in the Column. This value will be used as the location of the generated Pulse object. The default is C<0>.
@@ -128,7 +136,7 @@ method generate_pulse ( Num $num ) {
 
 =item C<_set_eta_t>
 
-A method that builds eta_t. Currently sets eta_t based on an expression derived by Dowell [See doi:10.1103/PhysRevSTAB.12.074201] which has been shown to be inconsistent with experimental data.
+A method that builds eta_t. Currently sets eta_t based on an expression derived in [http://dx.doi.org/10.1103/PhysRevLett.111.237401] which has been shown to be consistent with experimental data.
 
 =cut
 
@@ -138,8 +146,9 @@ method _set_eta_t {
 
   my $e_laser = $laser->energy;
   my $work_function = $self->work_function;
+  my $me = $self->effective_mass;
 
-  return me / 3 * ( $e_laser - $work_function )
+  return $me / 3 * ( $e_laser - $work_function )
 }
 
 =back
