@@ -31,7 +31,7 @@ use Physics::UEMColumn::Pulse;
 use Physics::UEMColumn::Auxiliary qw/:constants/;
 
 my $type_energy = num_of_unit( 'J' );
-my $type_eta    = num_of_unit('(kg J)');
+my $type_eta    = num_of_unit('kg J');
 
 =head1 ATTRIBUTES
 
@@ -59,7 +59,7 @@ The effective mass of the electron inside the metal associated with the band the
 
 =cut
 
-has 'effective_mass' => (isa => num_of_unit('(kg)'), is => 'ro', default => me);
+has 'effective_mass' => (isa => num_of_unit('kg'), is => 'ro', default => me);
 
 =item C<location>
 
