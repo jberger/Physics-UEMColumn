@@ -31,7 +31,6 @@ use Physics::UEMColumn::Pulse;
 use Physics::UEMColumn::Auxiliary qw/:constants/;
 
 my $type_energy = num_of_unit( 'J' );
-my $type_eta    = num_of_unit('kg J');
 
 =head1 ATTRIBUTES
 
@@ -51,7 +50,7 @@ The RMS transverse momentum spread (squared) of a photoexcited pulse from the Ph
 
 =cut
 
-has 'eta_t' => ( isa => $type_eta, is => 'ro', lazy => 1, builder => '_set_eta_t' );
+has 'eta_t' => ( isa => num_of_unit('kg J'), is => 'ro', lazy => 1, builder => '_set_eta_t' );
 
 =item C<effective_mass>
 
@@ -141,6 +140,7 @@ A method that builds eta_t. Currently sets eta_t based on an expression derived 
 =cut
 
 method _set_eta_t {
+  die 'Photocathode requires access to column object' unless $self->has_column;
   my $column = $self->column;
   my $laser = $column->laser;
 
